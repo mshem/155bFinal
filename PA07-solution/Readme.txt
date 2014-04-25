@@ -1,3 +1,38 @@
+
+
+Pong Revolution
+Michael Shemesh
+George Konwisser
+Ted McNulty
+
+
+
+Networking for multiplayer games 
+
+0. black board covering the whole screen, white thick outline and middle line, white thick vertical lines as rackets, rectangle as ball, ball and rackets jump in rather big steps rather than a smooth slide
+
+1. ball and rackets slide smoothly
+
+2. ball becomes round, rackets become rectangles with rounded edges
+
+3. everything gets color: board, rackets, and ball
+
+4. board gets texture
+
+5. ball, rackets, and board outline / border become 3D
+
+6. ball, rackets, and border get shadows
+
+7. everything becomes glossy (specular illumination)
+
+8. rackets become transparent, showing a kind of plastic 3D structure; board starts to reflect rackets and balls
+
+9. ball gets texture and actually starts to "roll" rather than slide
+
+10. camera perspective changes to a 45° angle
+
+
+
 ### ##  ###                 #   #       #####            #               
  #   ##  #                      #        #   #                           
  #   ### # ### ###  #####  ##  ### ##  # #   #  ##  ### ##   #### #####  
