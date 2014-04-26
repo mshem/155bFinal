@@ -5,7 +5,7 @@
       android:versionName="1.0">
     <application android:icon="@drawable/icon" android:label="@string/app_name" 
     				android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-        <activity android:name="cs155.opengl.Run"
+        <activity android:name="cs155.pong_evolution.Run"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

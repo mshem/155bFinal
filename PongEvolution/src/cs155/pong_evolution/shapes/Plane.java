@@ -1,4 +1,4 @@
-package cs155.opengl;
+package cs155.pong_evolution.shapes;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,13 +22,11 @@ import android.opengl.GLUtils;
  * a Cube containing the vertex information,
  * texture coordinates, the vertex indices
  * and drawing functionality, which is called 
- * by the renderer. Originally created by 
- * Savas Ziplies (nea/INsanityDesign)
+ * by the renderer.
  *  
- * @author Tim Hickey
- * 
+ * @author Savas Ziplies (nea/INsanityDesign)
  */
-public class Cube {
+public class Plane {
 
 	/** The buffer holding the vertices */
 	private FloatBuffer vertexBuffer;
@@ -45,35 +43,10 @@ public class Cube {
 	/** The initial vertex definition */	
 	private float vertices[] = {
 						//Vertices according to faces
-						0.0f, 0.0f, 1.0f, //front  v0,v1,v2,v3
-						1.0f, 0.0f, 1.0f, 	//v1
-						0.0f, 1.0f, 1.0f, 	//v2
-						1.0f, 1.0f, 1.0f, 	//v3
-			
-						1.0f, 0.0f, 1.0f, 	// right: v1=v4
-						1.0f, 0.0f, 0.0f,   // 
-						1.0f, 1.0f, 1.0f, 
-						1.0f, 1.0f, 0.0f,
-			
-						1.0f, 0.0f, 0.0f, 
-						0.0f, 0.0f, 0.0f, 
-						1.0f, 1.0f, 0.0f, 
-						0.0f, 1.0f, 0.0f,
-			
-						0.0f, 0.0f, 0.0f, 
-						0.0f, 0.0f, 1.0f, 
-						0.0f, 1.0f, 0.0f, 
-						0.0f, 1.0f, 1.0f,
-			
-						0.0f, 0.0f, 0.0f, 
-						1.0f, 0.0f, 0.0f, 
-						0.0f, 0.0f, 1.0f, 
-						1.0f, 0.0f, 1.0f,
-			
-						0.0f, 1.0f, 1.0f, 
-						1.0f, 1.0f, 1.0f, 
-						0.0f, 1.0f, 0.0f, 
-						1.0f, 1.0f, 0.0f, 
+						0f, 0f, 0f, //front  v0,v1,v2,v3
+						0f, 0f, 1f, 	//v1
+						1f, 0f, 0f, 	//v2
+						1f, 0f, 1f   //v3
 											};
 
 	/** 
@@ -86,91 +59,32 @@ public class Cube {
 	 */	
 	private float normals[] = {
 						// Normals
-						0f,0f,1f,  // front
-						0f,0f,1f,
-						0f,0f,1f,
-						0f,0f,1f,
-						
-						
-						1f,0f,0f,  //right
-						1f,0f,0f, 
-						1f,0f,0f, 
-						1f,0f,0f, 
-						
-						0f,0f,-1f, // back
-						0f,0f,-1f,
-						0f,0f,-1f,
-						0f,0f,-1f,
-						
-						-1f,0f,0f, // left
-						-1f,0f,0f,
-						-1f,0f,0f,
-						-1f,0f,0f,
-						
-						0f,-1f,0f, // bottom
-						0f,-1f,0f,
-						0f,-1f,0f,
-						0f,-1f,0f,
-						
-						0f,1f,0f, // top
+						0f,1f,0f,  // front
 						0f,1f,0f,
 						0f,1f,0f,
 						0f,1f,0f
-						
-						
 											};
 
 	/** The initial texture coordinates (u, v) */	
 	private float texture[] = {
 						//Mapping coordinates for the vertices
 						0.0f, 0.0f, 
-						0.0f, 1.0f, 
 						1.0f, 0.0f, 
-						1.0f, 1.0f,
-			
-						0.0f, 0.0f,
-						0.0f, 1.0f, 
-						1.0f, 0.0f,
-						1.0f, 1.0f,
-			
-						0.0f, 0.0f, 
-						0.0f, 1.0f, 
-						1.0f, 0.0f, 
-						1.0f, 1.0f,
-			
-						0.0f, 0.0f, 
-						0.0f, 1.0f, 
-						1.0f, 0.0f, 
-						1.0f, 1.0f,
-			
-						0.0f, 0.0f, 
-						0.0f, 1.0f, 
-						1.0f, 0.0f, 
-						1.0f, 1.0f,
-			
-						0.0f, 0.0f, 
-						0.0f, 1.0f, 
-						1.0f, 0.0f, 
-						1.0f, 1.0f, 
+						0.0f, 10.0f, 
+						1.0f, 10.0f
 									};
 
 	/** The initial indices definition */
 	private byte indices[] = {
 						// Faces definition
-						0, 1, 3, 0, 3, 2, 		// Face front
-						4, 5, 7, 4, 7, 6, 		// Face right
-						8, 9, 11, 8, 11, 10, 	// ...
-						12, 13, 15, 12, 15, 14, 
-						16, 17, 19, 16, 19, 18, 
-						20, 21, 23, 20, 23, 22, 
-												};
+						0, 1, 2, 1, 3, 2};
 
 	/**
-	 * The Cube constructor.
+	 * The Plane constructor.
 	 * 
 	 * Initiate the buffers.
 	 */
-	public Cube() {
+	public Plane() {
 		//
 		ByteBuffer byteBuf = ByteBuffer.allocateDirect(vertices.length * 4);
 		byteBuf.order(ByteOrder.nativeOrder());

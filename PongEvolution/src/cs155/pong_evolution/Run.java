@@ -1,5 +1,6 @@
-package cs155.opengl;
+package cs155.pong_evolution;
 
+import cs155.pong_evolution.views.View0;
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -13,7 +14,7 @@ import android.os.Bundle;
 public class Run extends Activity {
 
 	/** Our own OpenGL View overridden */
-	private PA07 pa07;
+	private View0 pa07;
 
 	/**
 	 * Initiate our @see Lesson07.java,
@@ -24,7 +25,7 @@ public class Run extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		//Initiate our Lesson with this Activity Context handed over
-		pa07 = new PA07(this);
+		pa07 = new View0(this);
 		//Set the lesson as View to the Activity
 		setContentView(pa07);
 	}
