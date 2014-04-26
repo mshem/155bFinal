@@ -225,8 +225,9 @@ public class PA07 extends GLSurfaceView implements Renderer {
 
 		
 		//setViewFromAvatar(gl);
-		setViewFromBehindAvatar(gl);
+//		setViewFromBehindAvatar(gl);
 		//setViewFromLeft(gl);
+		setViewFromTop(gl);
 		
 		drawAvatar(gl);
 		
@@ -344,6 +345,29 @@ public class PA07 extends GLSurfaceView implements Renderer {
 	}
 	
 
+	private void setViewFromTop(GL10 gl){
+		gl.glMatrixMode(GL10.GL_PROJECTION); 	//Select The Projection Matrix
+		gl.glLoadIdentity(); 					//Reset The Projection Matrix
+
+		// Set the properties of the camera. we want an ortho view
+//		GLU.gluOrtho2D(gl, 10f, -10f, 10f, -10f);
+//		GLU.gluPerspective(gl, 90.0f, width / height, 0.1f, 10000.0f);
+		gl.glOrthof(-10f, game.width + 10f, 0f, 120f, -1f, 1000f);
+		gl.glTranslatef(0,20f, 0f);
+		gl.glRotatef(90f, 1, 0, 0);
+		gl.glTranslatef(0,-30f, -90f);
+		// Point and aim the camera
+//		GLU.gluLookAt(gl, 
+//				game.width/2f, 60f, game.height/2f,              // eye position above Left of game board
+//				     game.width/2f, 0f, game.height/2f,   // target position at center of board
+//				      1f, 0f, 0f);                         // up direction
+
+		gl.glMatrixMode(GL10.GL_MODELVIEW); 	//Select The Modelview Matrix
+	}
+	
+	
+	//this will mgive us a birds eye view
+	
 	private void setViewFromLeft(GL10 gl){
 		gl.glMatrixMode(GL10.GL_PROJECTION); 	//Select The Projection Matrix
 		gl.glLoadIdentity(); 					//Reset The Projection Matrix
@@ -359,6 +383,7 @@ public class PA07 extends GLSurfaceView implements Renderer {
 
 		gl.glMatrixMode(GL10.GL_MODELVIEW); 	//Select The Modelview Matrix
 	}
+	
 	
 	private void drawProjectiles(GL10 gl){
 		for(Foe f:game.projectiles){
