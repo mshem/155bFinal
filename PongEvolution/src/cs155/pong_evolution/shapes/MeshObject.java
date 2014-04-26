@@ -1,4 +1,4 @@
-package cs155.opengl;
+package cs155.pong_evolution.shapes;
 
 import java.util.ArrayList;
 import java.io.File;
@@ -13,6 +13,8 @@ import java.util.Scanner;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
+
+import cs155.opengl.R;
 
 import android.content.Context;
 import android.graphics.Bitmap;
