@@ -9,6 +9,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import cs155.opengl.R;
 import cs155.pong_evolution.model.BallModel;
+import cs155.pong_evolution.model.PaddleModel;
 import cs155.pong_evolution.model.GameModel;
 import cs155.pong_evolution.shapes.Cube;
 import cs155.pong_evolution.shapes.Plane;
@@ -233,10 +234,7 @@ public class View0 extends GLSurfaceView implements Renderer {
 		drawRightPaddle(gl);
 	}
 
-	/**
-	 * @author Ted
-	 * @param gl
-	 */
+
 	private void drawBall(GL10 gl) {
 		gl.glPushMatrix();
 
@@ -257,21 +255,22 @@ public class View0 extends GLSurfaceView implements Renderer {
 	private void drawLeftPaddle(GL10 gl){
 
 		gl.glPushMatrix();
-		gl.glTranslatef(game.getLeftPaddle().pos[0], game.getLeftPaddle().pos[1], 
-				game.getLeftPaddle().pos[2]);
-		gl.glScalef(10f, 10f, 10f);
-		gl.glColor4f(1f, 0f, 0f, 1f);
+		gl.glTranslatef(0f, 0f, game.height/2);
+		gl.glScalef(game.getLeftPaddle().size[0], game.getLeftPaddle().size[1], game.getLeftPaddle().size[2]);
 
 		leftPaddle.draw(gl, filter);
 
 		gl.glPopMatrix();
 	}
+	
+	/**
+	 * @author Ted
+	 * @param gl
+	 */
 	private void drawRightPaddle(GL10 gl){
 		gl.glPushMatrix();
-		gl.glTranslatef(game.getRightPaddle().pos[0], game.getRightPaddle().pos[1], 
-				game.getRightPaddle().pos[2]);
-		gl.glScalef(10f, 10f, 10f);
-		gl.glColor4f(1f, 0f, 0f, 1f);
+		gl.glTranslatef(game.width-10f, 0f, game.width/2);
+		gl.glScalef(10f, 10f, 50f);
 		
 		rightPaddle.draw(gl, filter);
 		

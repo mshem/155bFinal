@@ -70,7 +70,7 @@ public class GameModel {
 		passedSecs = (float) ((currentTime - lastTime) / 1000);
 		lastTime = currentTime;
 
-		ball.update();
+		ball.update(leftPaddle, rightPaddle);
 		leftPaddle.update();
 		rightPaddle.update();
 	}

@@ -34,16 +34,16 @@ public class BallModel {
 	/**
 	 * change the velocity slightly and uses it to update the position
 	 */
-	public void update(){
+	public void update(PaddleModel leftPaddle, PaddleModel rightPaddle){
 		pos[0] += vel[0]*dt;
 		pos[1] += vel[1]*dt;
 		pos[2] += vel[2]*dt;
 		
-		keepOnBoard();
+		keepOnBoard(leftPaddle, rightPaddle);
 	}
 	
-	protected void keepOnBoard(){
-		if (pos[0]<0) {
+	protected void keepOnBoard(PaddleModel leftPaddle, PaddleModel rightPaddle){
+		if (hitsLeftPaddle(leftPaddle)) {
 			vel[0] *= -1; pos[0]=0;
 		} else if (pos[0] > game.width-1){
 			vel[0] *= -1; pos[0] = game.width-1;}
@@ -53,6 +53,15 @@ public class BallModel {
 		} else if (pos[2] > game.height-1){
 			vel[2] *= -1; pos[2] = game.height-1;
 		}
+	}
+	
+	protected boolean hitsLeftPaddle(PaddleModel leftPaddle){
+		//if its at the left edge and it hits the paddle
+		
+		if((pos[0]==leftPaddle.pos[0]) && (pos[2]>leftPaddle.pos[2]) || pos[2]<leftPaddle.pos[2]+leftPaddle.size[2]){
+			return true;
+		}
+		return false;
 	}
 
 }
