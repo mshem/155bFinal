@@ -120,9 +120,8 @@ public class View0 extends GLSurfaceView implements Renderer {
 	}
 
 	private void translateAndScale(GL10 gl, MovingObjectModel model) {
-		float halfShapeSize = 0.5f;
 		float pos[] = model.getCenter();
-		gl.glTranslatef(pos[0] - halfShapeSize, pos[1], pos[2] - halfShapeSize);
+		gl.glTranslatef(pos[0], pos[1], pos[2]);
 
 		float[] size = model.getSize();
 		gl.glScalef(size[0], size[1], size[2]);
@@ -177,6 +176,9 @@ public class View0 extends GLSurfaceView implements Renderer {
 	private void drawBoard(GL10 gl) {
 		gl.glPushMatrix();
 
+		// move to the board center
+		gl.glTranslatef(game.getWidth() / 2f, 0f, game.getHeight() / 2f);
+		
 		gl.glScalef(game.getWidth(), 1f, game.getHeight());
 
 		gl.glColor4f(0f, 0f, 0f, 1f); // draw in black
