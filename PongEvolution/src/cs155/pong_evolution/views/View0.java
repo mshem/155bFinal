@@ -23,7 +23,7 @@ import android.view.MotionEvent;
 
 /**
  * This is a modification of the "Lesson 07: Texture Mapping" NeHe tutorial for
- * the Google Android Platform orginally ported to Android by Savas Ziplies
+ * the Google Android Platform originally ported to Android by Savas Ziplies
  * (nea/INsanityDesign)
  * 
  * This file contains the View and Controller components of the game. The Model
@@ -38,7 +38,8 @@ public class View0 extends GLSurfaceView implements Renderer {
 	private Plane floorPlane; // for the floor
 	private Plane wallNPlane, wallSPlane, wallEPlane, wallWPlane;
 	private TrianglePrism tprism;
-	private Square3D square;
+	private Square3D square; //the ball in Level 0
+	private Cube leftPaddle, rightPaddle;	//paddles for computer and user
 	// -----------------------------
 
 	private float width, height;
@@ -137,6 +138,8 @@ public class View0 extends GLSurfaceView implements Renderer {
 		wallWPlane = new Plane();
 		tprism = new TrianglePrism();
 		square = new Square3D();
+		leftPaddle= new Cube();
+		rightPaddle= new Cube();
 
 		/*
 		 * try { suzanne = new MeshObject(context,"obj/suzanne2.obj"); } catch
@@ -153,69 +156,69 @@ public class View0 extends GLSurfaceView implements Renderer {
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		// And there'll be light!
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbientBuffer); // Setup
-																			// The
-																			// Ambient
-																			// Light
-																			// (
-																			// NEW
-																			// )
+		// The
+		// Ambient
+		// Light
+		// (
+		// NEW
+		// )
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuseBuffer); // Setup
-																			// The
-																			// Diffuse
-																			// Light
-																			// (
-																			// NEW
-																			// )
+		// The
+		// Diffuse
+		// Light
+		// (
+		// NEW
+		// )
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPositionBuffer); // Position
-																				// The
-																				// Light
-																				// (
-																				// NEW
-																				// )
+		// The
+		// Light
+		// (
+		// NEW
+		// )
 		gl.glEnable(GL10.GL_LIGHT0); // Enable Light 0 ( NEW )
 
 		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_AMBIENT, lightAmbientBuffer); // Setup
-																			// The
-																			// Ambient
-																			// Light
-																			// (
-																			// NEW
-																			// )
+		// The
+		// Ambient
+		// Light
+		// (
+		// NEW
+		// )
 		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_DIFFUSE, lightDiffuseBuffer); // Setup
-																			// The
-																			// Diffuse
-																			// Light
-																			// (
-																			// NEW
-																			// )
+		// The
+		// Diffuse
+		// Light
+		// (
+		// NEW
+		// )
 		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_POSITION, lightPositionBuffer1); // Position
-																				// The
-																				// Light
-																				// (
-																				// NEW
-																				// )
+		// The
+		// Light
+		// (
+		// NEW
+		// )
 		gl.glEnable(GL10.GL_LIGHT1); // Enable Light 0 ( NEW )
 
 		gl.glLightfv(GL10.GL_LIGHT2, GL10.GL_AMBIENT, lightAmbientBuffer); // Setup
-																			// The
-																			// Ambient
-																			// Light
-																			// (
-																			// NEW
-																			// )
+		// The
+		// Ambient
+		// Light
+		// (
+		// NEW
+		// )
 		gl.glLightfv(GL10.GL_LIGHT2, GL10.GL_DIFFUSE, lightDiffuseBuffer); // Setup
-																			// The
-																			// Diffuse
-																			// Light
-																			// (
-																			// NEW
-																			// )
+		// The
+		// Diffuse
+		// Light
+		// (
+		// NEW
+		// )
 		gl.glLightfv(GL10.GL_LIGHT2, GL10.GL_POSITION, lightPositionBuffer2); // Position
-																				// The
-																				// Light
-																				// (
-																				// NEW
-																				// )
+		// The
+		// Light
+		// (
+		// NEW
+		// )
 		gl.glEnable(GL10.GL_LIGHT2); // Enable Light 0 ( NEW )
 
 		// Settings
@@ -248,8 +251,7 @@ public class View0 extends GLSurfaceView implements Renderer {
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		if (height == 0) {
 			height = 1;
-		} // Prevent A Divide By Zero By
-			// Making Height Equal One
+		} // Prevent A Divide By Zero By Making Height Equal One
 
 		this.width = width; // store width/height for use by other view methods
 		this.height = height;
@@ -266,7 +268,7 @@ public class View0 extends GLSurfaceView implements Renderer {
 	 */
 	public void onDrawFrame(GL10 gl) {
 		game.update();
-		
+
 		// Clear Screen And Depth Buffer
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
@@ -276,18 +278,41 @@ public class View0 extends GLSurfaceView implements Renderer {
 
 		drawFloor(gl);
 		drawBall(gl);
+		drawLeftPaddle(gl);
+		drawRightPaddle(gl);
 	}
 
 	private void drawBall(GL10 gl) {
 		gl.glPushMatrix();
-		
+
 		gl.glTranslatef(game.getBall().pos[0], game.getBall().pos[1],
 				game.getBall().pos[2]);
 		gl.glScalef(10f, 10f, 10f);
 		gl.glColor4f(1f, 1f, 1f, 1f); // draw ball in black
-		
+
 		square.draw(gl, filter);
-		
+
+		gl.glPopMatrix();
+	}
+
+	private void drawLeftPaddle(GL10 gl){
+
+		gl.glPushMatrix();
+		gl.glTranslatef(game.getLeftPaddle().pos[0], game.getLeftPaddle().pos[1], 
+				game.getLeftPaddle().pos[2]);
+		gl.glScalef(10f, 10f, 10f);
+		gl.glColor4f(1f, 0f, 0f, 1f);
+
+
+
+		gl.glPopMatrix();
+	}
+	private void drawRightPaddle(GL10 gl){
+		gl.glPushMatrix();
+		gl.glTranslatef(game.getRightPaddle().pos[0], game.getRightPaddle().pos[1], 
+				game.getRightPaddle().pos[2]);
+		gl.glScalef(10f, 10f, 10f);
+		gl.glColor4f(1f, 0f, 0f, 1f);
 		gl.glPopMatrix();
 	}
 

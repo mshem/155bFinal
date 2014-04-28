@@ -23,7 +23,10 @@ public class GameModel {
 	public int height = 200;
 
 	private BallModel ball;
-
+	
+	private PaddleModel leftPaddle;
+	private PaddleModel rightPaddle;
+	
 	public long lastTime = System.currentTimeMillis();
 	public float passedSecs = 0;
 
@@ -34,6 +37,8 @@ public class GameModel {
 	 */
 	public GameModel() {
 		ball = new BallModel(10f, 0f, 0f, this);
+		leftPaddle= new PaddleModel(0f, 0f, 0f, this);
+		rightPaddle= new PaddleModel(0f, 0f, 0f, this);
 	}
 
 	public BallModel getBall() {
@@ -43,6 +48,22 @@ public class GameModel {
 	public void setBall(BallModel ball) {
 		this.ball = ball;
 	}
+	
+	public PaddleModel getLeftPaddle(){
+		return leftPaddle;
+	}
+	
+	public void setLeftPaddle(PaddleModel paddle){
+		leftPaddle=paddle;
+	}
+	
+	public PaddleModel getRightPaddle(){
+		return rightPaddle;
+	}
+	
+	public void setRightPaddle(PaddleModel paddle){
+		rightPaddle=paddle;
+	}
 
 	public void update() {
 		long currentTime = System.currentTimeMillis();
@@ -50,5 +71,7 @@ public class GameModel {
 		lastTime = currentTime;
 
 		ball.update();
+		leftPaddle.update();
+		rightPaddle.update();
 	}
 }
