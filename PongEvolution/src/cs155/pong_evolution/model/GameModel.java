@@ -80,6 +80,5 @@ public class GameModel {
 
 	public int getHeight() {
 		return height;
-	}
-
+	}	
 }
