@@ -111,7 +111,7 @@ public abstract class MovingObjectModel {
 	 * @return
 	 */
 	public float getMaxPos(int dimension) {
-		return center[dimension] + size[dimension];
+		return center[dimension] + size[dimension] / 2f;
 	}
 
 	/**
@@ -123,6 +123,6 @@ public abstract class MovingObjectModel {
 	 * @return
 	 */
 	public float getMinPos(int dimension) {
-		return center[dimension] - size[dimension];
+		return center[dimension] - size[dimension] / 2f;
 	}
 }

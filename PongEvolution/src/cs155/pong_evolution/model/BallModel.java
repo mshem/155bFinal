@@ -4,13 +4,15 @@ import java.util.Random;
 
 public class BallModel extends MovingObjectModel {
 
-	private static final float PADDLE_HIT_DIST = 0.9f;
+	private static final float MIN_PADDLE_HIT_DIST = -0.5f;
+	private static final float MAX_PADDLE_HIT_DIST = 0.5f;
 
 	public BallModel(GameModel game, float[] center, float[] size, float speed) {
 		super(game, center, size, speed);
 
-		// randomizeDirection();
-		direction[2] = 1f;
+//		randomizeDirection();
+		 direction[2] = 1f;
+//		 center[0] -= 16.5f;
 	}
 
 	private void randomizeDirection() {
@@ -45,24 +47,34 @@ public class BallModel extends MovingObjectModel {
 		checkUserPaddle();
 	}
 
-//	private void checkPaddle(PaddleModel paddle) {
-//		float centerXDif = Math.abs(center[0] - paddle.center[0]);
-//		float maxCenterXDif = Math.abs(getSize()[0] / 2f + paddle.getSize()[0]
-//				/ 2f);
-//		 if (centerXDif > maxCenterXDif)
-//			 return; // passes the paddle left or right
-//	}
+	// private void checkPaddle(PaddleModel paddle) {
+	// float centerXDif = Math.abs(center[0] - paddle.center[0]);
+	// float maxCenterXDif = Math.abs(getSize()[0] / 2f + paddle.getSize()[0]
+	// / 2f);
+	// if (centerXDif > maxCenterXDif)
+	// return; // passes the paddle left or right
+	// }
 
 	private boolean passedLeftRight(PaddleModel paddle) {
 		if (getMaxPos(0) < paddle.getMinPos(0))
 			return true; // missed paddle on the left
 
-		if (getMinPos(0) > paddle.getMaxPos(0))
+		if (getMinPos(0) > paddle.center[0])
 			return true; // missed paddle on the right
 
 		return false;
 	}
 
+	private void checkPaddleDist(float paddleDist, String paddleName) {
+		if (paddleDist <MIN_PADDLE_HIT_DIST)
+			return; // ball already passed the top paddle
+
+		if (paddleDist < MAX_PADDLE_HIT_DIST) {
+			System.out.println("hit AI paddle, dist: " + paddleDist);
+			direction[2] = -direction[2];
+		}
+	}
+	
 	private void checkAIPaddle() {
 		if (direction[2] > 0)
 			return; // ball is going away from paddle
@@ -71,14 +83,9 @@ public class BallModel extends MovingObjectModel {
 		if (passedLeftRight(paddle))
 			return;
 
-		if (getMinPos(2) < paddle.getMaxPos(2))
-			return; // ball already passed the top paddle
-
 		float paddleDist = getMinPos(2) - paddle.getMaxPos(2);
-		if (paddleDist < PADDLE_HIT_DIST) {
-			System.out.println("hit AI paddle, dist: " + paddleDist);
-			direction[2] = -direction[2];
-		}
+		
+		checkPaddleDist(paddleDist, "AI");
 	}
 
 	private void checkUserPaddle() {
@@ -89,13 +96,8 @@ public class BallModel extends MovingObjectModel {
 		if (passedLeftRight(paddle))
 			return;
 
-		if (getMaxPos(2) > paddle.getMinPos(2))
-			return; // ball already passed the bottom paddle
-
 		float paddleDist = paddle.getMinPos(2) - getMaxPos(2);
-		if (paddleDist < PADDLE_HIT_DIST) {
-			System.out.println("hit user paddle, dist: " + paddleDist);
-			direction[2] = -direction[2];
-		}
+		
+		checkPaddleDist(paddleDist, "user");
 	}
 }
