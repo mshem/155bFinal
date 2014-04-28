@@ -2,24 +2,19 @@ package cs155.pong_evolution.model;
 
 import java.util.Random;
 
-public class BallModel {
+public class BallModel extends MovingObjectModel {
 
-	public float dt = 0.1f;
+	private static final float PADDLE_HIT_DIST = 0.9f;
 
-	public float speed = 1f;
-	public float[] vel = { 0f, 0f, 1f };
-	public float[] pos = { 0f, 0f, 0f };
-	public float armAngle = 0; // angle of flapping arms
+	public BallModel(GameModel game, float[] center, float[] size, float speed) {
+		super(game, center, size, speed);
 
-	protected Random rand = new Random();
-	protected GameModel game;
+		// randomizeDirection();
+		direction[2] = 1f;
+	}
 
-	public BallModel(float speed, float xpos, float zpos, GameModel game) {
-		this.game = game;
-		this.pos[0] = (rand.nextFloat()) * game.width; // xpos;
-		this.pos[2] = (rand.nextFloat()) * game.height; // zpos;
-		this.speed = speed;
-
+	private void randomizeDirection() {
+		Random rand = new Random();
 		float a = (rand.nextFloat() - 0.5f) * 2;
 		float b = (rand.nextFloat() - 0.5f) * 2;
 		float c = (float) (Math.sqrt(a * a + b * b));
@@ -29,47 +24,78 @@ public class BallModel {
 			a = b = 1;
 			c = (float) Math.sqrt(2);
 		}
-		vel[0] = a / c * speed;
-		vel[2] = b / c * speed;
+		direction[0] = a / c;
+		direction[2] = b / c;
 	}
 
-	/**
-	 * change the velocity slightly and uses it to update the position
-	 */
-	public void update(PaddleModel leftPaddle, PaddleModel rightPaddle) {
-		pos[0] += vel[0] * dt;
-		pos[1] += vel[1] * dt;
-		pos[2] += vel[2] * dt;
+	@Override
+	protected void reachedBorder() {
+		// bump from left / right border
+		if (getCenter()[0] == MIN_CENTER[0] || getCenter()[0] == MAX_CENTER[0])
+			direction[0] = -direction[0];
 
-		keepOnBoard(leftPaddle, rightPaddle);
+		// for now: also bump from the top and bottom border
+		if (getCenter()[2] == MIN_CENTER[2] || getCenter()[2] == MAX_CENTER[2])
+			direction[2] = -direction[2];
 	}
 
-	protected void keepOnBoard(PaddleModel leftPaddle, PaddleModel rightPaddle) {
-		if (hitsLeftPaddle(leftPaddle)) {
-			vel[0] *= -1;
-			pos[0] = 0;
-		} else if (pos[0] > game.width - 1) {
-			vel[0] *= -1;
-			pos[0] = game.width - 1;
-		}
-
-		if (pos[2] < 0) {
-			vel[2] *= -1;
-			pos[2] = 0;
-		} else if (pos[2] > game.height - 1) {
-			vel[2] *= -1;
-			pos[2] = game.height - 1;
-		}
+	public void update() {
+		super.update();
+		checkAIPaddle();
+		checkUserPaddle();
 	}
 
-	protected boolean hitsLeftPaddle(PaddleModel leftPaddle) {
-		// if its at the left edge and it hits the paddle
+//	private void checkPaddle(PaddleModel paddle) {
+//		float centerXDif = Math.abs(center[0] - paddle.center[0]);
+//		float maxCenterXDif = Math.abs(getSize()[0] / 2f + paddle.getSize()[0]
+//				/ 2f);
+//		 if (centerXDif > maxCenterXDif)
+//			 return; // passes the paddle left or right
+//	}
 
-		if ((pos[0] == leftPaddle.pos[0]) && (pos[2] > leftPaddle.pos[2])
-				|| pos[2] < leftPaddle.pos[2] + leftPaddle.size[2]) {
-			return true;
-		}
+	private boolean passedLeftRight(PaddleModel paddle) {
+		if (getMaxPos(0) < paddle.getMinPos(0))
+			return true; // missed paddle on the left
+
+		if (getMinPos(0) > paddle.getMaxPos(0))
+			return true; // missed paddle on the right
+
 		return false;
 	}
 
+	private void checkAIPaddle() {
+		if (direction[2] > 0)
+			return; // ball is going away from paddle
+
+		PaddleModel paddle = game.getAIPaddle();
+		if (passedLeftRight(paddle))
+			return;
+
+		if (getMinPos(2) < paddle.getMaxPos(2))
+			return; // ball already passed the top paddle
+
+		float paddleDist = getMinPos(2) - paddle.getMaxPos(2);
+		if (paddleDist < PADDLE_HIT_DIST) {
+			System.out.println("hit AI paddle, dist: " + paddleDist);
+			direction[2] = -direction[2];
+		}
+	}
+
+	private void checkUserPaddle() {
+		if (direction[2] < 0)
+			return; // ball is going away from paddle
+
+		PaddleModel paddle = game.getUserPaddle();
+		if (passedLeftRight(paddle))
+			return;
+
+		if (getMaxPos(2) > paddle.getMinPos(2))
+			return; // ball already passed the bottom paddle
+
+		float paddleDist = paddle.getMinPos(2) - getMaxPos(2);
+		if (paddleDist < PADDLE_HIT_DIST) {
+			System.out.println("hit user paddle, dist: " + paddleDist);
+			direction[2] = -direction[2];
+		}
+	}
 }

@@ -1,44 +1,39 @@
 package cs155.pong_evolution.model;
 
-import java.util.ArrayList;
-
-
-/**
- * This is a demo of a simple game where the avatar throws bombs at the foes
- * from a spot in the corner of a room. The player rotates the view by dragging
- * the mouse and fires by clicking the mouse
- * 
- * This file stores the model which consists of an arraylist of Foes and an
- * arraylist of Bombs. The Foes update their movement by randomly changing their
- * velocity. The Bombs are under the control of gravity
- * 
- * @author tim
- * 
- */
 public class GameModel {
 	/*
-	 * size of the gameboard
+	 * size of the board
 	 */
-	public int width = 100;
-	public int height = 200;
+	private int width = 100;
+	private int height = 200;
 
 	private BallModel ball;
-	
-	private PaddleModel leftPaddle;
-	private PaddleModel rightPaddle;
-	
-	public long lastTime = System.currentTimeMillis();
-	public float passedSecs = 0;
 
-	/**
-	 * create the foes and avatar for the game
-	 * 
-	 * @param numFoes
-	 */
+	private PaddleModel userPaddle;
+	private PaddleModel aiPaddle;
+
+	private long lastTime = System.currentTimeMillis();
+	private long passedMillis = 0;
+
+
 	public GameModel() {
-		ball = new BallModel(10f, 0f, 0f, this);
-		leftPaddle= new PaddleModel(0f, 0f, 0f, this);
-		rightPaddle= new PaddleModel(0f, 0f, 0f, this);
+		this.ball = createBall();
+		
+		float paddleOffset = 10f;
+		userPaddle = createPaddle(height - paddleOffset);
+		aiPaddle = createPaddle(paddleOffset);
+	}
+
+	private PaddleModel createPaddle(float zPos) {
+		float[] center = {width / 2f, 0.1f, zPos};
+		float[] size = {20f, 0f, 2f};
+		return new PaddleModel(this, center, size, 0.001f);		
+	}
+	
+	private BallModel createBall() {
+		float[] center = {width / 2f, 0.1f, height / 2f};
+		float[] size = {5f, 0f, 5f};
+		return new BallModel(this, center, size, 0.05f);
 	}
 
 	public BallModel getBall() {
@@ -48,30 +43,43 @@ public class GameModel {
 	public void setBall(BallModel ball) {
 		this.ball = ball;
 	}
-	
-	public PaddleModel getLeftPaddle(){
-		return leftPaddle;
+
+	public PaddleModel getUserPaddle() {
+		return userPaddle;
 	}
-	
-	public void setLeftPaddle(PaddleModel paddle){
-		leftPaddle=paddle;
+
+	public void setUserPaddle(PaddleModel paddle) {
+		userPaddle = paddle;
 	}
-	
-	public PaddleModel getRightPaddle(){
-		return rightPaddle;
+
+	public PaddleModel getAIPaddle() {
+		return aiPaddle;
 	}
-	
-	public void setRightPaddle(PaddleModel paddle){
-		rightPaddle=paddle;
+
+	public void setAIPaddle(PaddleModel paddle) {
+		aiPaddle = paddle;
 	}
 
 	public void update() {
 		long currentTime = System.currentTimeMillis();
-		passedSecs = (float) ((currentTime - lastTime) / 1000);
+		passedMillis = currentTime - lastTime;
 		lastTime = currentTime;
 
-		ball.update(leftPaddle, rightPaddle);
-		leftPaddle.update();
-		rightPaddle.update();
+		ball.update();
+		userPaddle.update();
+		aiPaddle.update();
 	}
+
+	public long getPassedMillis() {
+		return passedMillis;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
 }

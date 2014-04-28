@@ -3,59 +3,51 @@
  */
 package cs155.pong_evolution.model;
 
-import java.util.Random;
+/**
+ * 
+ * 
+ * @author Ted
+ * @author Georg Konwisser, gekonwi@brandeis.edu
+ */
+public class PaddleModel extends MovingObjectModel {
 
+	public PaddleModel(GameModel game, float[] center, float[] size, float speed) {
+		super(game, center, size, speed);
 
-public class PaddleModel {
-	
-	public float dt=0.1f;
-	
-	public float speed=1f;
-	public float[] vel = {0f,0f,1f};
-	public float[] pos = {0f,0f,0f};
-	public float[] size= {10f,10f,50f};
-	
-	protected Random rand = new Random();
-	protected GameModel game;
-	
-	public PaddleModel(float speed,float xpos, float zpos, GameModel game){
-		this.game = game;
-		this.pos[0]=  (rand.nextFloat())*game.width; //xpos;
-		this.pos[2]=  (rand.nextFloat())*game.height; //zpos;
-		this.speed = speed;
-		
-		float a = (rand.nextFloat()-0.5f)*2;
-		float b = (rand.nextFloat()-0.5f)*2;	
-		float c = (float)(Math.sqrt(a*a+b*b));
-		
-		// look out for the theoretical case of c==0
-		if (c==0){a=b=1; c= (float)Math.sqrt(2);}
-		vel[0] = a/c*speed;
-		vel[2] = b/c*speed;
+		// initially a paddle does not move
+		this.direction = new float[] { 0f, 0f, 0f };
 	}
-	
+
 	/**
-	 * change the velocity slightly and uses it to update the position
+	 * Start a continuous left movement of the paddle until it reaches the
+	 * board's border or {@link #stop()} is called.
+	 * 
+	 * The panel will move according to it previously set speed.
 	 */
-	public void update(){
-		pos[0] += vel[0]*dt;
-		pos[1] += vel[1]*dt;
-		pos[2] += vel[2]*dt;
-		
-		keepOnBoard();
-	}
-	
-	protected void keepOnBoard(){
-		if (pos[0]<0) {
-			vel[0] *= -1; pos[0]=0;
-		} else if (pos[0] > game.width-1){
-			vel[0] *= -1; pos[0] = game.width-1;}
-		
-		if (pos[2]<0) {
-			vel[2] *= -1; pos[2]=0;
-		} else if (pos[2] > game.height-1){
-			vel[2] *= -1; pos[2] = game.height-1;
-		}
+	public void moveLeft() {
+		this.direction[0] = -1;
 	}
 
+	/**
+	 * Start a continuous right movement of the paddle until it reaches the
+	 * board's border or {@link #stop()} is called.
+	 * 
+	 * The panel will move according to it previously set speed.
+	 */
+	public void moveRight() {
+		this.direction[0] = -1;
+	}
+
+	/**
+	 * Stop the panel's movement. It can be started again calling
+	 * {@link #moveLeft()} or {@link #moveRight()}.
+	 */
+	public void stop() {
+		this.direction[0] = 0;
+	}
+
+	@Override
+	protected void reachedBorder() {
+		stop();
+	}
 }
