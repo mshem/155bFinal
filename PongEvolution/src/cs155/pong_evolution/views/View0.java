@@ -155,70 +155,19 @@ public class View0 extends GLSurfaceView implements Renderer {
 	 */
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		// And there'll be light!
-		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbientBuffer); // Setup
-		// The
-		// Ambient
-		// Light
-		// (
-		// NEW
-		// )
-		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuseBuffer); // Setup
-		// The
-		// Diffuse
-		// Light
-		// (
-		// NEW
-		// )
-		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPositionBuffer); // Position
-		// The
-		// Light
-		// (
-		// NEW
-		// )
+		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbientBuffer); // Setup The Ambient Light (NEW)
+		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuseBuffer); // Setup The Diffuse Light (NEW)
+		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPositionBuffer); // Position The Light (NEW)
 		gl.glEnable(GL10.GL_LIGHT0); // Enable Light 0 ( NEW )
-
-		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_AMBIENT, lightAmbientBuffer); // Setup
-		// The
-		// Ambient
-		// Light
-		// (
-		// NEW
-		// )
-		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_DIFFUSE, lightDiffuseBuffer); // Setup
-		// The
-		// Diffuse
-		// Light
-		// (
-		// NEW
-		// )
-		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_POSITION, lightPositionBuffer1); // Position
-		// The
-		// Light
-		// (
-		// NEW
-		// )
+		
+		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_AMBIENT, lightAmbientBuffer); // Setup The The Ambient Light (NEW)
+		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_DIFFUSE, lightDiffuseBuffer); // Setup The Diffuse Light(NEW)
+		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_POSITION, lightPositionBuffer1); // Position The Light (NEW)
 		gl.glEnable(GL10.GL_LIGHT1); // Enable Light 0 ( NEW )
 
-		gl.glLightfv(GL10.GL_LIGHT2, GL10.GL_AMBIENT, lightAmbientBuffer); // Setup
-		// The
-		// Ambient
-		// Light
-		// (
-		// NEW
-		// )
-		gl.glLightfv(GL10.GL_LIGHT2, GL10.GL_DIFFUSE, lightDiffuseBuffer); // Setup
-		// The
-		// Diffuse
-		// Light
-		// (
-		// NEW
-		// )
-		gl.glLightfv(GL10.GL_LIGHT2, GL10.GL_POSITION, lightPositionBuffer2); // Position
-		// The
-		// Light
-		// (
-		// NEW
-		// )
+		gl.glLightfv(GL10.GL_LIGHT2, GL10.GL_AMBIENT, lightAmbientBuffer); // Setup The Ambient Light (NEW)
+		gl.glLightfv(GL10.GL_LIGHT2, GL10.GL_DIFFUSE, lightDiffuseBuffer); // Setup The Diffuse Light (NEW)
+		gl.glLightfv(GL10.GL_LIGHT2, GL10.GL_POSITION, lightPositionBuffer2); // Position The Light (NEW)
 		gl.glEnable(GL10.GL_LIGHT2); // Enable Light 0 ( NEW )
 
 		// Settings
@@ -243,6 +192,8 @@ public class View0 extends GLSurfaceView implements Renderer {
 		wallSPlane.loadGLTexture(gl, context, R.drawable.crate);
 		wallWPlane.loadGLTexture(gl, context, R.drawable.crate);
 		tprism.loadGLTexture(gl, context, R.drawable.icon);
+		leftPaddle.loadGLTexture(gl, context, R.drawable.crate);
+		rightPaddle.loadGLTexture(gl, context, R.drawable.crate);
 	}
 
 	/**
@@ -282,6 +233,10 @@ public class View0 extends GLSurfaceView implements Renderer {
 		drawRightPaddle(gl);
 	}
 
+	/**
+	 * @author Ted
+	 * @param gl
+	 */
 	private void drawBall(GL10 gl) {
 		gl.glPushMatrix();
 
@@ -295,6 +250,10 @@ public class View0 extends GLSurfaceView implements Renderer {
 		gl.glPopMatrix();
 	}
 
+	/**
+	 * @author Ted
+	 * @param gl
+	 */
 	private void drawLeftPaddle(GL10 gl){
 
 		gl.glPushMatrix();
@@ -303,7 +262,7 @@ public class View0 extends GLSurfaceView implements Renderer {
 		gl.glScalef(10f, 10f, 10f);
 		gl.glColor4f(1f, 0f, 0f, 1f);
 
-
+		leftPaddle.draw(gl, filter);
 
 		gl.glPopMatrix();
 	}
@@ -313,6 +272,9 @@ public class View0 extends GLSurfaceView implements Renderer {
 				game.getRightPaddle().pos[2]);
 		gl.glScalef(10f, 10f, 10f);
 		gl.glColor4f(1f, 0f, 0f, 1f);
+		
+		rightPaddle.draw(gl, filter);
+		
 		gl.glPopMatrix();
 	}
 
