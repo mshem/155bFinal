@@ -161,7 +161,7 @@ public class View0 extends GLSurfaceView implements Renderer {
 		GLU.gluPerspective(gl, 45.0f, width / height, 0.1f, 10000.0f);
 
 		// Point and aim the camera
-		float[] eye = { game.getWidth() / 2f, 300f, game.getHeight() / 2f };
+		float[] eye = { game.getWidth() / 2f, 250f, game.getHeight() / 2f };
 		float[] center = { game.getWidth() / 2f, 0f, game.getHeight() / 2f };
 		float[] up = { 0f, 0f, -1f };
 
