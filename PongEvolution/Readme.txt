@@ -10,9 +10,9 @@ Ted McNulty
 Networking for multiplayer games 
 
 0. black board covering the whole screen, white thick outline and middle line, white thick vertical lines as rackets, rectangle as ball, ball and rackets jump in rather big steps rather than a smooth slide
-
+ DONE
 1. ball and rackets slide smoothly
-
+ IN PROGRESS
 2. ball becomes round, rackets become rectangles with rounded edges
 
 3. everything gets color: board, rackets, and ball
@@ -31,6 +31,7 @@ Networking for multiplayer games
 
 10. camera perspective changes to a 45° angle
 
+11. Two player control
 
 
 ### ##  ###                 #   #       #####            #               
