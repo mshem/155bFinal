@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class BallModel extends MovingObjectModel {
 
-	private static final float MIN_PADDLE_HIT_DIST = -0.5f;
+	private static final float MIN_PADDLE_HIT_DIST = -1f;
 	private static final float MAX_PADDLE_HIT_DIST = 0.5f;
 
 	public BallModel(GameModel game, float[] center, float[] size, float speed) {
@@ -47,19 +47,11 @@ public class BallModel extends MovingObjectModel {
 		checkUserPaddle();
 	}
 
-	// private void checkPaddle(PaddleModel paddle) {
-	// float centerXDif = Math.abs(center[0] - paddle.center[0]);
-	// float maxCenterXDif = Math.abs(getSize()[0] / 2f + paddle.getSize()[0]
-	// / 2f);
-	// if (centerXDif > maxCenterXDif)
-	// return; // passes the paddle left or right
-	// }
-
 	private boolean passedLeftRight(PaddleModel paddle) {
 		if (getMaxPos(0) < paddle.getMinPos(0))
 			return true; // missed paddle on the left
 
-		if (getMinPos(0) > paddle.center[0])
+		if (getMinPos(0) > paddle.getMaxPos(0))
 			return true; // missed paddle on the right
 
 		return false;

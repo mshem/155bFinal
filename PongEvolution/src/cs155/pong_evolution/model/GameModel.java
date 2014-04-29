@@ -15,7 +15,6 @@ public class GameModel {
 	private long lastTime = System.currentTimeMillis();
 	private long passedMillis = 0;
 
-
 	public GameModel() {
 		this.ball = createBall();
 		
@@ -27,7 +26,7 @@ public class GameModel {
 	private PaddleModel createPaddle(float zPos) {
 		float[] center = {width / 2f, 0.1f, zPos};
 		float[] size = {20f, 0f, 2f};
-		return new PaddleModel(this, center, size, 0.001f);		
+		return new PaddleModel(this, center, size, 0.05f);		
 	}
 	
 	private BallModel createBall() {

@@ -3,6 +3,7 @@ package cs155.pong_evolution.views;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import cs155.pong_evolution.controller.TouchControl;
 import cs155.pong_evolution.model.BallModel;
 import cs155.pong_evolution.model.GameModel;
 import cs155.pong_evolution.model.MovingObjectModel;
@@ -26,22 +27,17 @@ import android.view.MotionEvent;
  */
 public class View0 extends GLSurfaceView implements Renderer {
 
+
 	private Square3D square;
 
 	private float width, height;
 
 	private int filter = 1; // Which texture filter? ( NEW )
 
-	/*
-	 * These variables store the previous X and Y values as well as a fix touch
-	 * scale factor. These are necessary for the rotation transformation added
-	 * to this lesson, based on the screen touches. ( NEW )
-	 */
-	private float oldX;
-	private float oldY;
-
 	private GameModel game;
 
+	private TouchControl touchControl;
+	
 	/**
 	 * Instance the Cube object and set the Activity Context handed over.
 	 * Initiate the light buffers and set this class as renderer for this now
@@ -53,7 +49,7 @@ public class View0 extends GLSurfaceView implements Renderer {
 	 */
 	public View0(Context context) {
 		super(context);
-		game = new GameModel();
+		this.game = new GameModel();
 
 		// Set this as Renderer
 		this.setRenderer(this);
@@ -62,7 +58,9 @@ public class View0 extends GLSurfaceView implements Renderer {
 		this.requestFocus();
 		this.setFocusableInTouchMode(true);
 
-		square = new Square3D();
+		this.square = new Square3D();
+		
+		this.touchControl = new TouchControl(game);
 	}
 
 	/**
@@ -187,10 +185,7 @@ public class View0 extends GLSurfaceView implements Renderer {
 
 		gl.glPopMatrix();
 	}
-
-	long lastEvent = System.currentTimeMillis();
-
-	/* ***** Listener Events ( NEW ) ***** */
+	
 	/**
 	 * Override the touch screen listener.
 	 * 
@@ -198,43 +193,7 @@ public class View0 extends GLSurfaceView implements Renderer {
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		//
-		float x = event.getX();
-		float y = event.getY();
-		long touchStartTime = 0;
-
-		// If a touch is moved on the screen
-		if (event.getAction() == MotionEvent.ACTION_MOVE) {
-			handleTouchMove(x, y);
-			// A press on the screen
-		} else if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			touchStartTime = System.currentTimeMillis();
-		} else if (event.getAction() == MotionEvent.ACTION_UP) {
-			if (System.currentTimeMillis() - touchStartTime < 250L) {
-				handleTouchTap(x, y);
-			}
-		}
-
-		// Remember the values
-		oldX = x;
-		oldY = y;
-
-		// We handled the event
-		return true;
-	}
-
-	private void handleTouchTap(float x, float y) {
-		// create an box and throw it!
-		System.out.println("tapped at (" + x + ", " + y + ")");
-
-	}
-
-	private void handleTouchMove(float x, float y) {
-		// Calculate the change
-		float dx = x - oldX;
-		float dy = y - oldY;
-
-		System.out.println("dragged by (" + dx + ", " + dy + ")");
+		return touchControl.onTouchEvent(event);
 	}
 
 }

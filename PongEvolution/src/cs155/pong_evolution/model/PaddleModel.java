@@ -35,7 +35,7 @@ public class PaddleModel extends MovingObjectModel {
 	 * The panel will move according to it previously set speed.
 	 */
 	public void moveRight() {
-		this.direction[0] = -1;
+		this.direction[0] = 1;
 	}
 
 	/**
