@@ -32,7 +32,7 @@ public class View0 extends GLSurfaceView implements Renderer {
 
 	private float width, height;
 
-	private int filter = 1; // Which texture filter? ( NEW )
+	private int filter = 1;
 
 	private GameModel game;
 
