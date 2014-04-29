@@ -109,7 +109,8 @@ public class View0 extends GLSurfaceView implements Renderer {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
 
-		setViewFromAbove(gl);
+//		setViewFromAbove(gl);
+		setViewFromAboveOrtho(gl);
 
 		drawBoard(gl);
 		drawBall(gl, game.getBall());
@@ -152,6 +153,27 @@ public class View0 extends GLSurfaceView implements Renderer {
 
 		gl.glPopMatrix();
 	}
+	
+	private void setViewFromAboveOrtho(GL10 gl){
+		gl.glMatrixMode(GL10.GL_PROJECTION); 	//Select The Projection Matrix
+		gl.glLoadIdentity(); 					//Reset The Projection Matrix
+
+		// Set the properties of the camera. we want an ortho view
+//		GLU.gluOrtho2D(gl, 10f, -10f, 10f, -10f);
+//		GLU.gluPerspective(gl, 90.0f, width / height, 0.1f, 10000.0f);
+		gl.glOrthof(-10f, game.getWidth() + 10f, 0f, 210f, -1f, 1000f);
+		gl.glTranslatef(0,20f, 0f);
+		gl.glRotatef(90f, 1, 0, 0);
+		gl.glTranslatef(0,-30f, -185f);
+		// Point and aim the camera
+//		GLU.gluLookAt(gl, 
+//				game.width/2f, 60f, game.height/2f,              // eye position above Left of game board
+//				     game.width/2f, 0f, game.height/2f,   // target position at center of board
+//				      1f, 0f, 0f);                         // up direction
+
+		gl.glMatrixMode(GL10.GL_MODELVIEW); 	//Select The Modelview Matrix
+	}
+	
 
 	private void setViewFromAbove(GL10 gl) {
 		gl.glMatrixMode(GL10.GL_PROJECTION); // Select The Projection Matrix
