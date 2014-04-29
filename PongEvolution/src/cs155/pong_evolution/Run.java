@@ -1,7 +1,9 @@
 package cs155.pong_evolution;
 
 import cs155.pong_evolution.views.View0;
+import cs155.pong_evolution.views.View10;
 import android.app.Activity;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
 /**
@@ -14,20 +16,16 @@ import android.os.Bundle;
 public class Run extends Activity {
 
 	/** Our own OpenGL View overridden */
-	private View0 pa07;
+	private GLSurfaceView view;
 
-	/**
-	 * Initiate our @see Lesson07.java,
-	 * which is GLSurfaceView and Renderer
-	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		//Initiate our Lesson with this Activity Context handed over
-		pa07 = new View0(this);
+		view = new View10(this);
 		//Set the lesson as View to the Activity
-		setContentView(pa07);
+		setContentView(view);
 	}
 
 	/**
@@ -36,7 +34,7 @@ public class Run extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		pa07.onResume();
+		view.onResume();
 	}
 
 	/**
@@ -45,7 +43,7 @@ public class Run extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		pa07.onPause();
+		view.onPause();
 	}
 
 }

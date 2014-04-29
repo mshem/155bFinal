@@ -125,4 +125,12 @@ public abstract class MovingObjectModel {
 	public float getMinPos(int dimension) {
 		return center[dimension] - size[dimension] / 2f;
 	}
+	
+	public void setSize(int dimension, float value) {
+		this.size[dimension] = value;
+	}
+	
+	public void setCenter(int dimension, float value) {
+		this.center[dimension] = value;
+	}
 }
