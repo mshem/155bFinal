@@ -10,8 +10,8 @@ public class BallModel extends MovingObjectModel {
 	public BallModel(GameModel game, float[] center, float[] size, float speed) {
 		super(game, center, size, speed);
 
-//		randomizeDirection();
-		 direction[2] = 1f;
+		randomizeDirection();
+//		 direction[2] = 1f;
 //		 center[0] -= 16.5f;
 	}
 
