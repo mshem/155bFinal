@@ -12,7 +12,7 @@ public class BallModel extends MovingObjectModel {
 
 //		randomizeDirection();
 		 direction[2] = 1f;
-//		 center[0] -= 16.5f;
+		 center[0] -= 16.5f;
 	}
 
 	private void randomizeDirection() {
@@ -37,8 +37,17 @@ public class BallModel extends MovingObjectModel {
 			direction[0] = -direction[0];
 
 		// for now: also bump from the top and bottom border
-		if (getCenter()[2] == MIN_CENTER[2] || getCenter()[2] == MAX_CENTER[2])
+		if (getCenter()[2] == MIN_CENTER[2]){ //hit top paddle
 			direction[2] = -direction[2];
+			game.updateScore(game.getAIPaddle());
+			game.resetField();
+	}
+		
+		if (getCenter()[2] == MAX_CENTER[2]){
+				direction[2] = -direction[2];
+				game.updateScore(game.getUserPaddle());
+				game.resetField();
+		}
 	}
 
 	public void update() {

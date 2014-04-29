@@ -10,6 +10,8 @@ package cs155.pong_evolution.model;
  * @author Georg Konwisser, gekonwi@brandeis.edu
  */
 public class PaddleModel extends MovingObjectModel {
+	private int score;
+	private String name;
 
 	public PaddleModel(GameModel game, float[] center, float[] size, float speed) {
 		super(game, center, size, speed);
@@ -18,6 +20,13 @@ public class PaddleModel extends MovingObjectModel {
 		this.direction = new float[] { 0f, 0f, 0f };
 	}
 
+	public int getScore(){
+		return score;
+	}
+	
+	public void setScore(int s){
+		this.score=s;
+	}
 	/**
 	 * Start a continuous left movement of the paddle until it reaches the
 	 * board's border or {@link #stop()} is called.
@@ -49,5 +58,18 @@ public class PaddleModel extends MovingObjectModel {
 	@Override
 	protected void reachedBorder() {
 		stop();
+	}
+	
+	
+	public String toString(){
+		return getName();
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

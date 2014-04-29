@@ -8,6 +8,9 @@ public class GameModel {
 	private int height = 200;
 
 	private BallModel ball;
+	
+	private int playerScore;
+	private int aiScore;
 
 	private PaddleModel userPaddle;
 	private PaddleModel aiPaddle;
@@ -21,7 +24,9 @@ public class GameModel {
 		
 		float paddleOffset = 10f;
 		userPaddle = createPaddle(height - paddleOffset);
+		userPaddle.setName("userPaddle");
 		aiPaddle = createPaddle(paddleOffset);
+		aiPaddle.setName("aiPaddle");
 	}
 
 	private PaddleModel createPaddle(float zPos) {
@@ -82,4 +87,15 @@ public class GameModel {
 		return height;
 	}
 
+	public void updateScore(PaddleModel w){
+		w.setScore(w.getScore()+1);
+		System.out.println(w.toString()+" scored! "+w.toString()+" has "+w.getScore()+" points.");
+	}
+	
+	public void resetField(){ //win paddle and lose paddle
+		aiPaddle.center[0] = width / 2f;
+		userPaddle.center[0] = width/2f;
+		ball.center[0] = width/2f;
+		ball.center[2] = height/2f;
+	}
 }
