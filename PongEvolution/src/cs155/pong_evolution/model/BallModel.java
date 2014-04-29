@@ -13,7 +13,7 @@ public class BallModel extends MovingObjectModel {
 		randomizeDirection();
 //		 direction[2] = 1f;
 //		 center[0] -= 16.5f;
-		// some test change for git
+		// some other change for git
 	}
 
 	private void randomizeDirection() {
