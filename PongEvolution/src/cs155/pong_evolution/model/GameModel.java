@@ -3,41 +3,38 @@ package cs155.pong_evolution.model;
 public class GameModel {
 	private static final float BALL_SPEED = 0.05f;
 	private static final float PADDLE_SPEED = 0.05f;
+	private static final float PADDLE_OFFSET = 10f;
 	private static final int AI_STRENGTH = 2;
 	/*
 	 * size of the board
 	 */
-	private int width = 100;
-	private int height = 200;
+	private static final int WIDTH = 100;
+	private static final int HEIGHT = 200;
 
 	private BallModel ball;
 
-	private PaddleModel userPaddle;
-	private PaddleModel aiPaddle;
+	private PlayerModel userPlayer;
+	private PlayerModel aiPlayer;
 
 	private long lastTime = System.currentTimeMillis();
 	private long passedMillis = 0;
 
 	public GameModel() {
 		this.ball = createBall();
-		
-		float paddleOffset = 10f;
-		userPaddle = createPaddle(height - paddleOffset, false);
-		aiPaddle = createPaddle(paddleOffset, true);
+
+		userPlayer = new UserPlayerModel(createPaddle(HEIGHT - PADDLE_OFFSET));
+		aiPlayer = new AiPlayerModel(createPaddle(PADDLE_OFFSET), AI_STRENGTH);
 	}
 
-	private PaddleModel createPaddle(float zPos, boolean ai) {
-		float[] center = {width / 2f, 0.1f, zPos};
-		float[] size = {20f, 0f, 2f};
-		if (ai)
-			return new AiPaddleModel(AI_STRENGTH, this, center, size, PADDLE_SPEED);
-		else
-			return new PaddleModel(this, center, size, PADDLE_SPEED);		
+	private PaddleModel createPaddle(float zPos) {
+		float[] center = { WIDTH / 2f, 0.1f, zPos };
+		float[] size = { 20f, 0f, 2f };
+		return new PaddleModel(this, center, size, PADDLE_SPEED);
 	}
-	
+
 	private BallModel createBall() {
-		float[] center = {width / 2f, 0.1f, height / 2f};
-		float[] size = {5f, 0f, 5f};
+		float[] center = { WIDTH / 2f, 0.1f, HEIGHT / 2f };
+		float[] size = { 5f, 0f, 5f };
 		return new BallModel(this, center, size, BALL_SPEED);
 	}
 
@@ -50,19 +47,11 @@ public class GameModel {
 	}
 
 	public PaddleModel getUserPaddle() {
-		return userPaddle;
-	}
-
-	public void setUserPaddle(PaddleModel paddle) {
-		userPaddle = paddle;
+		return userPlayer.getPaddle();
 	}
 
 	public PaddleModel getAIPaddle() {
-		return aiPaddle;
-	}
-
-	public void setAIPaddle(PaddleModel paddle) {
-		aiPaddle = paddle;
+		return aiPlayer.getPaddle();
 	}
 
 	public void update() {
@@ -71,8 +60,8 @@ public class GameModel {
 		lastTime = currentTime;
 
 		ball.update();
-		userPaddle.update();
-		aiPaddle.update();
+		userPlayer.update();
+		aiPlayer.update();
 	}
 
 	public long getPassedMillis() {
@@ -80,10 +69,10 @@ public class GameModel {
 	}
 
 	public int getWidth() {
-		return width;
+		return WIDTH;
 	}
 
 	public int getHeight() {
-		return height;
-	}	
+		return HEIGHT;
+	}
 }
