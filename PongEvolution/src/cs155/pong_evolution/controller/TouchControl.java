@@ -37,14 +37,14 @@ public class TouchControl {
 		float y = event.getY();
 
 		if (event.getAction() == MotionEvent.ACTION_MOVE) {
-			handleActionMove(x, y);
+			handleMoveTouch(x, y);
 
 		} else if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			touchStartMillis = System.currentTimeMillis();
 
 		} else if (event.getAction() == MotionEvent.ACTION_UP) {
 			if (currentAction == ACTION_NONE)
-				handleActionTap(x, y);
+				handleTapTouch(x, y);
 			currentAction = ACTION_NONE;
 		}
 
@@ -56,7 +56,7 @@ public class TouchControl {
 		return true;
 	}
 
-	private void handleActionTap(float x, float y) {
+	private void handleTapTouch(float x, float y) {
 		if (System.currentTimeMillis() - touchStartMillis > MAX_TAP_MILLIS)
 			return;
 
@@ -68,7 +68,7 @@ public class TouchControl {
 		game.getUserPaddle().stop();
 	}
 
-	private void handleActionMove(float x, float y) {
+	private void handleMoveTouch(float x, float y) {
 		// Calculate the change
 		float dx = x - oldX;
 		float dy = y - oldY;
