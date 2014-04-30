@@ -38,13 +38,13 @@ public class BallModel extends MovingObjectModel {
 
 		// for now: also bump from the top and bottom border
 		if (getCenter()[2] == MIN_CENTER[2]){
-			game.getUserPlayer().setScore(game.getUserPlayer().getScore() + 1);
+			game.getUserPlayer().increaseScore();
 			direction[2] = -direction[2];
 			System.out.println("Player Scored! Score:"+game.getUserPlayer().getScore());
 
 	}
 		if( getCenter()[2] == MAX_CENTER[2]){
-			game.getAiPlayer().setScore(game.getUserPlayer().getScore() + 1);
+			game.getAiPlayer().increaseScore();
 			direction[2] = -direction[2];
 			System.out.println("Computer Scored! Score:"+game.getAiPlayer().getScore());
 		}

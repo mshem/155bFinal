@@ -9,7 +9,7 @@ public abstract class PlayerModel {
 		super();
 		this.name = name;
 		this.paddle = paddle;
-		this.setScore(0);
+		this.score = 0;
 	}
 
 	public abstract void update();
@@ -27,15 +27,11 @@ public abstract class PlayerModel {
 	}
 
 	public void increaseScore() {
-		setScore(getScore() + 1);
+		score++;
 	}
 	
 	@Override
 	public String toString() {
 		return "Player " + name;
-	}
-
-	public void setScore(int score) {
-		this.score = score;
 	}
 }
