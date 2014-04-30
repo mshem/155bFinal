@@ -1,6 +1,7 @@
 package cs155.pong_evolution;
 
 import cs155.pong_evolution.views.View0;
+import cs155.pong_evolution.views.View1;
 import cs155.pong_evolution.views.View10;
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
@@ -23,6 +24,7 @@ public class Run extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		view = new View0(this);		
+//		view = new View1(this);		
 //		view = new View10(this);		
 		setContentView(view);
 	}

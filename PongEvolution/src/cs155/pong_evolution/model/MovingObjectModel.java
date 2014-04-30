@@ -24,7 +24,11 @@ public abstract class MovingObjectModel {
 	 * the x, y, z coordinates
 	 */
 	protected float[] center;
-
+	
+	/**
+	 * the x, y, z coordinates for lag in level 0
+	 */
+	protected float[] laggingCenter=new float[3];
 	/**
 	 * the paddle's size in x, y, z dimensions
 	 */
@@ -35,6 +39,8 @@ public abstract class MovingObjectModel {
 	protected final float[] MIN_CENTER;
 	protected final float[] MAX_CENTER;
 
+	private long lastActionTime= System.currentTimeMillis();
+	
 	/**
 	 * Creates a movable object which changes its position on update if
 	 * <code>direction != (0, 0, 0)</code>. Initially the object does not move.
@@ -130,4 +136,22 @@ public abstract class MovingObjectModel {
 	public void setCenter(int dimension, float value) {
 		this.center[dimension] = value;
 	}
+	
+	public void setLaggingCenter(){
+		for(int i=0;i<3;i++){
+			laggingCenter[i]=center[i];
+		}
+	}
+	
+	public float[] getLaggingCenter(){
+		return laggingCenter;
+	}
+	
+	public long getLastActionTime(){
+		return lastActionTime;
+	}
+	
+	public void setLastActionTime(long time){
+		lastActionTime=time;
+	}	
 }
