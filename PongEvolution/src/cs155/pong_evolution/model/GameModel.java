@@ -22,8 +22,8 @@ public class GameModel {
 	public GameModel() {
 		this.ball = createBall();
 
-		userPlayer = new UserPlayerModel(createPaddle(HEIGHT - PADDLE_OFFSET));
-		aiPlayer = new AiPlayerModel(createPaddle(PADDLE_OFFSET), AI_STRENGTH);
+		setUserPlayer(new UserPlayerModel(createPaddle(HEIGHT - PADDLE_OFFSET)));
+		setAiPlayer(new AiPlayerModel(createPaddle(PADDLE_OFFSET), AI_STRENGTH));
 	}
 
 	private PaddleModel createPaddle(float zPos) {
@@ -47,11 +47,11 @@ public class GameModel {
 	}
 
 	public PaddleModel getUserPaddle() {
-		return userPlayer.getPaddle();
+		return getUserPlayer().getPaddle();
 	}
 
 	public PaddleModel getAIPaddle() {
-		return aiPlayer.getPaddle();
+		return getAiPlayer().getPaddle();
 	}
 
 	public void update() {
@@ -60,8 +60,8 @@ public class GameModel {
 		lastTime = currentTime;
 
 		ball.update();
-		userPlayer.update();
-		aiPlayer.update();
+		getUserPlayer().update();
+		getAiPlayer().update();
 	}
 
 	public long getPassedMillis() {
@@ -74,5 +74,21 @@ public class GameModel {
 
 	public int getHeight() {
 		return HEIGHT;
+	}
+
+	public PlayerModel getUserPlayer() {
+		return userPlayer;
+	}
+
+	public void setUserPlayer(PlayerModel userPlayer) {
+		this.userPlayer = userPlayer;
+	}
+
+	public PlayerModel getAiPlayer() {
+		return aiPlayer;
+	}
+
+	public void setAiPlayer(PlayerModel aiPlayer) {
+		this.aiPlayer = aiPlayer;
 	}
 }
