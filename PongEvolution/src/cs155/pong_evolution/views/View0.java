@@ -164,7 +164,7 @@ public class View0 implements ViewDelegate {
 		GameModel game = GameModel.get();
 		
 		// Point and aim the camera
-		float[] eye = { game.getWidth() / 2f, 250f, game.getHeight() / 2f };
+		float[] eye = { game.getWidth() / 2f, MasterView.DEFAULT_CAM_HEIGHT, game.getHeight() / 2f };
 		float[] center = { game.getWidth() / 2f, 0f, game.getHeight() / 2f };
 		float[] up = { 0f, 0f, -1f };
 

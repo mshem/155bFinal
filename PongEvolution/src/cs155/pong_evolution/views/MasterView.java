@@ -34,6 +34,8 @@ import android.view.MotionEvent;
  */
 public class MasterView extends GLSurfaceView implements Renderer {
 
+	public static final float DEFAULT_CAM_HEIGHT = 250f;
+	
 	public static interface ViewDelegate {
 		/**
 		 * The Surface is created/init()

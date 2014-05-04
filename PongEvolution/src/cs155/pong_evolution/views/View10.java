@@ -33,10 +33,16 @@ import android.opengl.GLU;
 public class View10 implements ViewDelegate {
 
 	private static final float PADDLE_HEIGHT = 15f;
-	private static final float BALL_SIZE = 5f;
+	private static final float BALL_HEIGHT = 5f;
+
+	private static final float CAM_HEIGHT = 70f;
+	private static final float CAM_Z_POS = GameModel.get().getHeight() + 145f;
+	private static final long CAM_MOVE_MILLIS = 10000;
+	private static final float CAM_SPEED = 0.0015f;
+	private static final long MODEL_GROW_MILLIS = 5000;
 
 	private Cube cube;
-//	private Sphere sphere;
+	// private Sphere sphere;
 	private Plane floor;
 	// private MeshObject suzanne = null;
 	private Plane leftWall, rightWall;
@@ -106,29 +112,47 @@ public class View10 implements ViewDelegate {
 
 		//
 		cube = new Cube();
-//		sphere = new Sphere(1f, 30, 30);
+		// sphere = new Sphere(1f, 30, 30);
 		floor = new Plane();
 		leftWall = new Plane();
 		rightWall = new Plane();
 		tprism = new TrianglePrism();
 	}
 
-	private void initModel() {
+	private void updateModelHeight() {
+		long passedMillis = System.currentTimeMillis() - startMillis;
+
+		if (passedMillis < CAM_MOVE_MILLIS)
+			return;
+
+		if (passedMillis > CAM_MOVE_MILLIS + MODEL_GROW_MILLIS)
+			return;
+
+		float progress = ((float) passedMillis - CAM_MOVE_MILLIS)
+				/ (float) MODEL_GROW_MILLIS;
+		float paddleHeight = progress * PADDLE_HEIGHT;
+		float ballHeight = progress * BALL_HEIGHT;
+
 		GameModel game = GameModel.get();
 
-		game.getUserPaddle().setSize(1, PADDLE_HEIGHT);
-		game.getAIPaddle().setSize(1, PADDLE_HEIGHT);
+		game.getUserPaddle().setSize(1, paddleHeight);
+		game.getAIPaddle().setSize(1, paddleHeight);
 
-		for (int i = 0; i < 3; i++)
-			game.getBall().setSize(i, BALL_SIZE);
+		game.getBall().setSize(1, ballHeight);
 	}
+
+	private long startMillis;
+	private float[] eye;
 
 	/**
 	 * The Surface is created/init()
 	 */
 	public void init(GL10 gl, Context context) {
-		initModel();
-		
+		startMillis = System.currentTimeMillis();
+		GameModel game = GameModel.get();
+		eye = new float[] { game.getWidth() / 2f,
+				MasterView.DEFAULT_CAM_HEIGHT, game.getHeight() };
+
 		setupLights(gl);
 
 		/*
@@ -145,8 +169,25 @@ public class View10 implements ViewDelegate {
 
 		// Really Nice Perspective Calculations
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
-		
+
 		loadTextures(gl, context);
+	}
+
+	private void updateCamPos() {
+		long passedMillis = System.currentTimeMillis() - startMillis;
+		if (passedMillis > CAM_MOVE_MILLIS)
+			return;
+
+		double progress = (double) passedMillis / (double) CAM_MOVE_MILLIS;
+
+		double factor = Math.sin(progress * Math.PI) * CAM_SPEED;
+
+		float step = (float) ((MasterView.DEFAULT_CAM_HEIGHT - CAM_HEIGHT) * factor);
+		eye[1] -= step;
+
+		int height = GameModel.get().getHeight();
+		step = (float) ((CAM_Z_POS - height / 2f) * factor);
+		eye[2] += step;
 	}
 
 	private void setupLights(GL10 gl) {
@@ -198,6 +239,8 @@ public class View10 implements ViewDelegate {
 	 * Here we do our drawing
 	 */
 	public void onDrawFrame(GL10 gl) {
+		updateModelHeight();
+
 		// Clear Screen And Depth Buffer
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
@@ -233,7 +276,7 @@ public class View10 implements ViewDelegate {
 
 	private void drawWall(GL10 gl, Plane wall) {
 		GameModel game = GameModel.get();
-		
+
 		gl.glPushMatrix();
 		gl.glTranslatef(-game.getWidth() / 2f, 0f, -game.getHeight() / 2);
 		gl.glRotatef(-90, 1f, 0f, 0f);
@@ -259,7 +302,7 @@ public class View10 implements ViewDelegate {
 		gl.glPushMatrix();
 
 		translateAndScale(gl, ball);
-		
+
 		cube.draw(gl, filter);
 
 		gl.glPopMatrix();
@@ -282,6 +325,8 @@ public class View10 implements ViewDelegate {
 	}
 
 	private void setAngleViewFromUser(GL10 gl) {
+		updateCamPos();
+
 		gl.glMatrixMode(GL10.GL_PROJECTION); // Select The Projection Matrix
 		gl.glLoadIdentity(); // Reset The Projection Matrix
 
@@ -289,9 +334,8 @@ public class View10 implements ViewDelegate {
 		GLU.gluPerspective(gl, 45.0f, width / height, 0.1f, 10000.0f);
 
 		GameModel game = GameModel.get();
-		
+
 		// Point and aim the camera
-		float[] eye = { game.getWidth() / 2f, 100f, game.getHeight() + 200f };
 		float[] center = { game.getWidth() / 2f, 0f, game.getHeight() / 2f };
 		float[] up = { 0f, 1f, 0f };
 
@@ -310,16 +354,16 @@ public class View10 implements ViewDelegate {
 
 	private void drawBoard(GL10 gl) {
 		GameModel game = GameModel.get();
-		
+
 		gl.glPushMatrix();
 		gl.glScalef(game.getWidth(), 1f, game.getHeight());
 		gl.glMatrixMode(GL10.GL_TEXTURE);
 		gl.glLoadIdentity();
 		gl.glScalef(8f, 1f, 0f);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		
+
 		floor.draw(gl, filter);
-		
+
 		gl.glMatrixMode(GL10.GL_TEXTURE);
 		gl.glLoadIdentity();
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
@@ -331,7 +375,7 @@ public class View10 implements ViewDelegate {
 		 * Load the textures for the shapes once during Surface creation
 		 */
 		cube.loadGLTexture(gl, context, R.drawable.wood);
-//		sphere.loadGLTexture(gl, context, R.drawable.ball_8);
+		// sphere.loadGLTexture(gl, context, R.drawable.ball_8);
 		floor.loadGLTexture(gl, context, R.drawable.tiles);
 		// suzanne.loadGLTexture(gl, context,R.drawable.bg);
 		leftWall.loadGLTexture(gl, context, R.drawable.crate);

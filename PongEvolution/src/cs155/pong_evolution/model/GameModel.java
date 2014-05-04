@@ -43,13 +43,13 @@ public class GameModel {
 	
 	private PaddleModel createPaddle(float zPos) {
 		float[] center = { WIDTH / 2f, 0.1f, zPos };
-		float[] size = { 20f, 0f, 2f };
+		float[] size = { 20f, 0.1f, 2f };
 		return new PaddleModel(center, size, PADDLE_SPEED);
 	}
 
 	private BallModel createBall() {
 		float[] center = { WIDTH / 2f, 0.1f, HEIGHT / 2f };
-		float[] size = { 5f, 0f, 5f };
+		float[] size = { 5f, 0.1f, 5f };
 		return new BallModel(center, size, BALL_SPEED);
 	}
 

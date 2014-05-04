@@ -59,7 +59,7 @@ public class View1 implements ViewDelegate {
 		// Settings
 		gltext = new GLText(gl, context.getAssets());
 		gltext.load("Roboto-Regular.ttf", 14, 2, 2);
-		
+
 		gl.glDisable(GL10.GL_DITHER); // Disable dithering ( NEW )
 		gl.glEnable(GL10.GL_TEXTURE_2D); // Enable Texture Mapping
 		gl.glShadeModel(GL10.GL_SMOOTH); // Enable Smooth Shading
@@ -170,7 +170,8 @@ public class View1 implements ViewDelegate {
 		GameModel game = GameModel.get();
 
 		// Point and aim the camera
-		float[] eye = { game.getWidth() / 2f, 250f, game.getHeight() / 2f };
+		float[] eye = { game.getWidth() / 2f, MasterView.DEFAULT_CAM_HEIGHT,
+				game.getHeight() / 2f };
 		float[] center = { game.getWidth() / 2f, 0f, game.getHeight() / 2f };
 		float[] up = { 0f, 0f, -1f };
 
