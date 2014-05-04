@@ -1,5 +1,9 @@
 package cs155.pong_evolution;
 
+import cs155.pong_evolution.controller.ScoreListener;
+import cs155.pong_evolution.model.GameModel;
+import cs155.pong_evolution.views.MasterView;
+import cs155.pong_evolution.views.MasterView.ViewDelegate;
 import cs155.pong_evolution.views.View0;
 import cs155.pong_evolution.views.View1;
 import cs155.pong_evolution.views.View10;
@@ -17,15 +21,19 @@ import android.os.Bundle;
 public class Run extends Activity {
 
 	/** Our own OpenGL View overridden */
-	private GLSurfaceView view;
+	private MasterView view;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		view = new View0(this);		
-//		view = new View1(this);		
-//		view = new View10(this);		
+		view = new MasterView(this, new View0());
+		
+		ViewDelegate[] nextDelegates = {new View1(), new View10()};
+		ScoreListener listener = new ScoreListener(view, nextDelegates);
+		
+		GameModel.get().getUserPlayer().addObserver(listener);
+		
 		setContentView(view);
 	}
 
@@ -46,5 +54,4 @@ public class Run extends Activity {
 		super.onPause();
 		view.onPause();
 	}
-
 }

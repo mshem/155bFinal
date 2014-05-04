@@ -1,6 +1,5 @@
 package cs155.pong_evolution.views;
 
-import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import cs155.pong_evolution.controller.TouchControl;
@@ -9,6 +8,7 @@ import cs155.pong_evolution.model.GameModel;
 import cs155.pong_evolution.model.MovingObjectModel;
 import cs155.pong_evolution.model.PaddleModel;
 import cs155.pong_evolution.shapes.Square3D;
+import cs155.pong_evolution.views.MasterView.ViewDelegate;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
@@ -24,8 +24,9 @@ import android.view.MotionEvent;
  * is in the GameModel07 class
  * 
  * @author Tim Hickey
+ * @author Ted
  */
-public class View0 extends GLSurfaceView implements Renderer {
+public class View0 implements ViewDelegate {
 
 
 	private Square3D square;
@@ -34,11 +35,7 @@ public class View0 extends GLSurfaceView implements Renderer {
 
 	private int filter = 1;
 
-	private GameModel game;
-
-	private TouchControl touchControl;
-
-	private long lagTime=350;
+	private static final long lagTime = 350;
 	
 	
 	/**
@@ -46,31 +43,15 @@ public class View0 extends GLSurfaceView implements Renderer {
 	 * Initiate the light buffers and set this class as renderer for this now
 	 * GLSurfaceView. Request Focus and set if focusable in touch mode to
 	 * receive the Input from Screen and Buttons
-	 * 
-	 * @param context
-	 *            - The Activity Context
 	 */
-	public View0(Context context) {
-		super(context);
-		this.game = new GameModel();
-
-		// Set this as Renderer
-		this.setRenderer(this);
-
-		// Request focus, otherwise buttons won't react
-		this.requestFocus();
-		this.setFocusableInTouchMode(true);
-
+	public View0() {
 		this.square = new Square3D();
-
-		this.touchControl = new TouchControl(game);
-		
 	}
 
 	/**
 	 * The Surface is created/init()
 	 */
-	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+	public void init(GL10 gl, Context context) {
 		// Settings
 		gl.glDisable(GL10.GL_DITHER); // Disable dithering ( NEW )
 		gl.glEnable(GL10.GL_TEXTURE_2D); // Enable Texture Mapping
@@ -106,9 +87,6 @@ public class View0 extends GLSurfaceView implements Renderer {
 	 * Here we do our drawing
 	 */
 	public void onDrawFrame(GL10 gl) {
-
-		game.update();
-
 		// Clear Screen And Depth Buffer
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
@@ -117,6 +95,9 @@ public class View0 extends GLSurfaceView implements Renderer {
 		setViewFromAbove(gl);
 
 		drawBoard(gl);
+		
+		GameModel game = GameModel.get();
+		
 		drawBall(gl, game.getBall());
 		drawPaddle(gl, game.getUserPaddle());
 		drawPaddle(gl, game.getAIPaddle());
@@ -184,6 +165,8 @@ public class View0 extends GLSurfaceView implements Renderer {
 		// Set the properties of the camera
 		GLU.gluPerspective(gl, 45.0f, width / height, 0.1f, 10000.0f);
 
+		GameModel game = GameModel.get();
+		
 		// Point and aim the camera
 		float[] eye = { game.getWidth() / 2f, 250f, game.getHeight() / 2f };
 		float[] center = { game.getWidth() / 2f, 0f, game.getHeight() / 2f };
@@ -198,6 +181,8 @@ public class View0 extends GLSurfaceView implements Renderer {
 	private void drawBoard(GL10 gl) {
 		gl.glPushMatrix();
 
+		GameModel game = GameModel.get();
+		
 		// move to the board center
 		gl.glTranslatef(game.getWidth() / 2f, 0f, game.getHeight() / 2f);
 
@@ -209,15 +194,4 @@ public class View0 extends GLSurfaceView implements Renderer {
 
 		gl.glPopMatrix();
 	}
-
-	/**
-	 * Override the touch screen listener.
-	 * 
-	 * React to moves and presses on the touchscreen.
-	 */
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		return touchControl.onTouchEvent(event);
-	}
-
 }

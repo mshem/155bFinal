@@ -4,11 +4,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import cs155.opengl.R;
-import cs155.pong_evolution.controller.TouchControl;
 import cs155.pong_evolution.model.BallModel;
 import cs155.pong_evolution.model.GameModel;
 import cs155.pong_evolution.model.MovingObjectModel;
@@ -16,12 +14,9 @@ import cs155.pong_evolution.model.PaddleModel;
 import cs155.pong_evolution.shapes.Cube;
 import cs155.pong_evolution.shapes.Plane;
 import cs155.pong_evolution.shapes.TrianglePrism;
-
+import cs155.pong_evolution.views.MasterView.ViewDelegate;
 import android.content.Context;
-import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
-import android.opengl.GLSurfaceView.Renderer;
-import android.view.MotionEvent;
 
 /**
  * This is a modification of the "Lesson 07: Texture Mapping" NeHe tutorial for
@@ -34,12 +29,10 @@ import android.view.MotionEvent;
  * @author Tim Hickey
  * @author Georg Konwisser, gekonwi@brandeis.edu
  */
-public class View10 extends GLSurfaceView implements Renderer {
+public class View10 implements ViewDelegate {
 
 	private static final float PADDLE_HEIGHT = 5f;
 	private static final float BALL_HEIGHT = 5f;
-
-	private TouchControl touchControl;
 
 	/** Cube instance */
 	private Cube cube;
@@ -51,9 +44,6 @@ public class View10 extends GLSurfaceView implements Renderer {
 	private float width, height;
 
 	private int filter = 1; // Which texture filter? ( NEW )
-
-	/** Is light enabled ( NEW ) */
-	private boolean light = false;
 
 	/*
 	 * The initial light values for ambient and diffuse as well as the light
@@ -72,10 +62,6 @@ public class View10 extends GLSurfaceView implements Renderer {
 	private FloatBuffer lightPositionBuffer1;
 	private FloatBuffer lightPositionBuffer2;
 
-	private GameModel game;
-	/** The Activity Context */
-	private Context context;
-
 	/**
 	 * Instance the Cube object and set the Activity Context handed over.
 	 * Initiate the light buffers and set this class as renderer for this now
@@ -85,23 +71,7 @@ public class View10 extends GLSurfaceView implements Renderer {
 	 * @param context
 	 *            - The Activity Context
 	 */
-	public View10(Context context) {
-		super(context);
-
-		initModel();
-
-		this.touchControl = new TouchControl(game);
-		
-		// Set this as Renderer
-		this.setRenderer(this);
-
-		// Request focus, otherwise buttons won't react
-		this.requestFocus();
-		this.setFocusableInTouchMode(true);
-
-		//
-		this.context = context;
-
+	public View10() {
 		//
 		ByteBuffer byteBuf = ByteBuffer.allocateDirect(lightAmbient.length * 4);
 		byteBuf.order(ByteOrder.nativeOrder());
@@ -139,18 +109,10 @@ public class View10 extends GLSurfaceView implements Renderer {
 		leftWall = new Plane();
 		rightWall = new Plane();
 		tprism = new TrianglePrism();
-
-		/*
-		 * try { suzanne = new MeshObject(context,"obj/suzanne2.obj"); } catch
-		 * (IOException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace();
-		 * System.out.println("no such file 'obj/cubesds.obj' in assets"); }
-		 */
-
 	}
 
 	private void initModel() {
-		game = new GameModel();
+		GameModel game = GameModel.get();
 
 		game.getUserPaddle().setSize(1, PADDLE_HEIGHT);
 		game.getAIPaddle().setSize(1, PADDLE_HEIGHT);
@@ -165,7 +127,9 @@ public class View10 extends GLSurfaceView implements Renderer {
 	/**
 	 * The Surface is created/init()
 	 */
-	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+	public void init(GL10 gl, Context context) {
+		initModel();
+		
 		setupLights(gl);
 
 		/*
@@ -182,8 +146,8 @@ public class View10 extends GLSurfaceView implements Renderer {
 
 		// Really Nice Perspective Calculations
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
-
-		loadTextures(gl);
+		
+		loadTextures(gl, context);
 	}
 
 	private void setupLights(GL10 gl) {
@@ -212,18 +176,6 @@ public class View10 extends GLSurfaceView implements Renderer {
 		gl.glEnable(GL10.GL_LIGHT2);
 	}
 
-	private void loadTextures(GL10 gl) {
-		/*
-		 * Load the textures for the shapes once during Surface creation
-		 */
-		cube.loadGLTexture(gl, this.context, R.drawable.crate);
-		floor.loadGLTexture(gl, this.context, R.drawable.tiles);
-		// suzanne.loadGLTexture(gl, context,R.drawable.bg);
-		leftWall.loadGLTexture(gl, context, R.drawable.crate);
-		rightWall.loadGLTexture(gl, context, R.drawable.crate);
-		tprism.loadGLTexture(gl, context, R.drawable.icon);
-	}
-
 	/**
 	 * If the surface changes, reset the viewport
 	 */
@@ -247,8 +199,6 @@ public class View10 extends GLSurfaceView implements Renderer {
 	 * Here we do our drawing
 	 */
 	public void onDrawFrame(GL10 gl) {
-		game.update();
-
 		// Clear Screen And Depth Buffer
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
@@ -261,14 +211,15 @@ public class View10 extends GLSurfaceView implements Renderer {
 		drawBoard(gl);
 		drawWalls(gl);
 
-		drawBall(gl, game.getBall());
-		drawPaddle(gl, game.getUserPaddle());
-		drawPaddle(gl, game.getAIPaddle());
+		drawBall(gl, GameModel.get().getBall());
+		drawPaddle(gl, GameModel.get().getUserPaddle());
+		drawPaddle(gl, GameModel.get().getAIPaddle());
 	}
 
 	private void drawWalls(GL10 gl) {
 		gl.glPushMatrix();
-		gl.glTranslatef(game.getWidth() / 2, 0f, game.getHeight() / 2);
+		gl.glTranslatef(GameModel.get().getWidth() / 2, 0f, GameModel.get()
+				.getHeight() / 2);
 
 		gl.glPushMatrix();
 		gl.glRotatef(90, 0f, 1f, 0f);
@@ -284,6 +235,8 @@ public class View10 extends GLSurfaceView implements Renderer {
 	}
 
 	private void drawWall(GL10 gl, Plane wall) {
+		GameModel game = GameModel.get();
+		
 		gl.glPushMatrix();
 		gl.glTranslatef(-game.getWidth() / 2f, 0f, -game.getHeight() / 2);
 		gl.glRotatef(-90, 1f, 0f, 0f);
@@ -340,6 +293,8 @@ public class View10 extends GLSurfaceView implements Renderer {
 		// Set the properties of the camera
 		GLU.gluPerspective(gl, 45.0f, width / height, 0.1f, 10000.0f);
 
+		GameModel game = GameModel.get();
+		
 		// Point and aim the camera
 		float[] eye = { game.getWidth() / 2f, 200f, game.getHeight() + 100f };
 		float[] center = { game.getWidth() / 2f, 0f, game.getHeight() / 2f };
@@ -359,26 +314,32 @@ public class View10 extends GLSurfaceView implements Renderer {
 	// }
 
 	private void drawBoard(GL10 gl) {
+		GameModel game = GameModel.get();
+		
 		gl.glPushMatrix();
 		gl.glScalef(game.getWidth(), 1f, game.getHeight());
 		gl.glMatrixMode(GL10.GL_TEXTURE);
 		gl.glLoadIdentity();
 		gl.glScalef(8f, 1f, 0f);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
+		
 		floor.draw(gl, filter);
+		
 		gl.glMatrixMode(GL10.GL_TEXTURE);
 		gl.glLoadIdentity();
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glPopMatrix();
 	}
 
-	/**
-	 * Override the touch screen listener.
-	 * 
-	 * React to moves and presses on the touchscreen.
-	 */
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		return touchControl.onTouchEvent(event);
+	private void loadTextures(GL10 gl, Context context) {
+		/*
+		 * Load the textures for the shapes once during Surface creation
+		 */
+		cube.loadGLTexture(gl, context, R.drawable.crate);
+		floor.loadGLTexture(gl, context, R.drawable.tiles);
+		// suzanne.loadGLTexture(gl, context,R.drawable.bg);
+		leftWall.loadGLTexture(gl, context, R.drawable.crate);
+		rightWall.loadGLTexture(gl, context, R.drawable.crate);
+		tprism.loadGLTexture(gl, context, R.drawable.icon);
 	}
 }

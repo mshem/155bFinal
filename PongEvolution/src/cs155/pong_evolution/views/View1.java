@@ -2,7 +2,6 @@ package cs155.pong_evolution.views;
 
 import java.io.IOException;
 
-import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import cs155.pong_evolution.controller.TouchControl;
@@ -11,6 +10,7 @@ import cs155.pong_evolution.model.GameModel;
 import cs155.pong_evolution.model.MovingObjectModel;
 import cs155.pong_evolution.model.PaddleModel;
 import cs155.pong_evolution.shapes.Square3D;
+import cs155.pong_evolution.views.MasterView.ViewDelegate;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -32,55 +32,34 @@ import android.view.MotionEvent;
  * 
  * @author Tim Hickey
  */
-public class View1 extends GLSurfaceView implements Renderer {
-
+public class View1 implements ViewDelegate {
 
 	private Square3D square;
 
 	private float width, height;
-	Context context;
 
 	private int filter = 1;
 
-	private GameModel game;
-	
 	GLText gltext;
 
-	private TouchControl touchControl;
-	
 	/**
 	 * Instance the Cube object and set the Activity Context handed over.
 	 * Initiate the light buffers and set this class as renderer for this now
 	 * GLSurfaceView. Request Focus and set if focusable in touch mode to
 	 * receive the Input from Screen and Buttons
-	 * 
-	 * @param context
-	 *            - The Activity Context
 	 */
-	public View1(Context context) {
-		super(context);
-		this.context=context;
-		this.game = new GameModel();
-
-		// Set this as Renderer
-		this.setRenderer(this);
-
-		// Request focus, otherwise buttons won't react
-		this.requestFocus();
-		this.setFocusableInTouchMode(true);
-
+	public View1() {
 		this.square = new Square3D();
-		
-		this.touchControl = new TouchControl(game);
 	}
 
 	/**
 	 * The Surface is created/init()
 	 */
-	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+	public void init(GL10 gl, Context context) {
 		// Settings
-		 gltext = new GLText( gl, context.getAssets() );
-	      gltext.load( "Roboto-Regular.ttf", 14, 2, 2 );
+		gltext = new GLText(gl, context.getAssets());
+		gltext.load("Roboto-Regular.ttf", 14, 2, 2);
+		
 		gl.glDisable(GL10.GL_DITHER); // Disable dithering ( NEW )
 		gl.glEnable(GL10.GL_TEXTURE_2D); // Enable Texture Mapping
 		gl.glShadeModel(GL10.GL_SMOOTH); // Enable Smooth Shading
@@ -115,21 +94,21 @@ public class View1 extends GLSurfaceView implements Renderer {
 	 * Here we do our drawing
 	 */
 	public void onDrawFrame(GL10 gl) {
-		game.update();
-
 		// Clear Screen And Depth Buffer
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
 
 		setViewFromAbove(gl);
-//		setViewFromAboveOrtho(gl);
+		// setViewFromAboveOrtho(gl);
 		displayScore(gl);
 		drawBoard(gl);
+
+		GameModel game = GameModel.get();
+
 		drawBall(gl, game.getBall());
 		drawPaddle(gl, game.getUserPaddle());
 		drawPaddle(gl, game.getAIPaddle());
-		
 	}
 
 	private void translateAndScale(GL10 gl, MovingObjectModel model) {
@@ -167,27 +146,19 @@ public class View1 extends GLSurfaceView implements Renderer {
 
 		gl.glPopMatrix();
 	}
-	
-	private void setViewFromAboveOrtho(GL10 gl){
-		gl.glMatrixMode(GL10.GL_PROJECTION); 	//Select The Projection Matrix
-		gl.glLoadIdentity(); 					//Reset The Projection Matrix
 
-		// Set the properties of the camera. we want an ortho view
-//		GLU.gluOrtho2D(gl, 10f, -10f, 10f, -10f);
-//		GLU.gluPerspective(gl, 90.0f, width / height, 0.1f, 10000.0f);
-		gl.glOrthof(-10f, game.getWidth() + 10f, 0f, 210f, -1f, 1000f);
-		gl.glTranslatef(0,20f, 0f);
+	private void setViewFromAboveOrtho(GL10 gl) {
+		gl.glMatrixMode(GL10.GL_PROJECTION); // Select The Projection Matrix
+		gl.glLoadIdentity(); // Reset The Projection Matrix
+
+		gl.glOrthof(-10f, GameModel.get().getWidth() + 10f, 0f, 210f, -1f,
+				1000f);
+		gl.glTranslatef(0, 20f, 0f);
 		gl.glRotatef(90f, 1, 0, 0);
-		gl.glTranslatef(0,-30f, -185f);
-		// Point and aim the camera
-//		GLU.gluLookAt(gl, 
-//				game.width/2f, 60f, game.height/2f,              // eye position above Left of game board
-//				     game.width/2f, 0f, game.height/2f,   // target position at center of board
-//				      1f, 0f, 0f);                         // up direction
+		gl.glTranslatef(0, -30f, -185f);
 
-		gl.glMatrixMode(GL10.GL_MODELVIEW); 	//Select The Modelview Matrix
+		gl.glMatrixMode(GL10.GL_MODELVIEW); // Select The Modelview Matrix
 	}
-	
 
 	private void setViewFromAbove(GL10 gl) {
 		gl.glMatrixMode(GL10.GL_PROJECTION); // Select The Projection Matrix
@@ -195,6 +166,8 @@ public class View1 extends GLSurfaceView implements Renderer {
 
 		// Set the properties of the camera
 		GLU.gluPerspective(gl, 45.0f, width / height, 0.1f, 10000.0f);
+
+		GameModel game = GameModel.get();
 
 		// Point and aim the camera
 		float[] eye = { game.getWidth() / 2f, 250f, game.getHeight() / 2f };
@@ -210,85 +183,83 @@ public class View1 extends GLSurfaceView implements Renderer {
 	private void drawBoard(GL10 gl) {
 		gl.glPushMatrix();
 
+		GameModel game = GameModel.get();
+
 		// move to the board center
 		gl.glTranslatef(game.getWidth() / 2f, 0f, game.getHeight() / 2f);
-		
+
 		gl.glScalef(game.getWidth(), 1f, game.getHeight());
 
 		gl.glColor4f(0f, 0f, 0f, 1f); // draw in black
 
 		square.draw(gl, filter);
-		
+
 		gl.glPopMatrix();
 	}
-	
+
 	/**
 	 * Override the touch screen listener.
 	 * 
 	 * React to moves and presses on the touchscreen.
 	 */
-	
-	
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		return touchControl.onTouchEvent(event);
-	}
-	
-//	public void displayScore(GL10 gl){
-//		TexFont tf = new TexFont(getContext(), gl);
-//		try {
-//			tf.LoadFont("arial.bff", gl);
-//			tf.PrintAt(gl,"Hello World", 0, 0);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
-	
-	public void displayScore(GL10 gl){
-		
-			gl.glPushMatrix();
-	      // Redraw background color
-	      gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
 
-	      // Set to ModelView mode
-	      gl.glMatrixMode( GL10.GL_MODELVIEW );           // Activate Model View Matrix
-	      gl.glLoadIdentity();                            // Load Identity Matrix
+	public void displayScore(GL10 gl) {
 
-	      // enable texture + alpha blending
-	      // NOTE: this is required for text rendering! we could incorporate it into
-	      // the GLText class, but then it would be called multiple times (which impacts performance).
-	      gl.glEnable( GL10.GL_TEXTURE_2D );              // Enable Texture Mapping
-	      gl.glEnable( GL10.GL_BLEND );                   // Enable Alpha Blend
-	      gl.glBlendFunc( GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA );  // Set Alpha Blend Function
-	      gl.glRotatef(-90, 1f, 0f, 0f);
-	      gl.glTranslatef(-20f, -20f, 0f);
-	      // TEST: render the entire font texture
-	      gl.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );         // Set Color to Use
-	      gltext.drawTexture( width, height );            // Draw the Entire Texture
+		gl.glPushMatrix();
+		// Redraw background color
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-	      // Display ai score
-	      gltext.begin( 1.0f, 1.0f, 1.0f, 1.0f );         // Begin Text Rendering (Set Color WHITE)
-	      gltext.draw( ""+game.getAiPlayer().getScore(), 0, 0 );          // Draw Test String
-	      gltext.end();        
-	      
-	      //display player score
-	      gl.glTranslatef(0f, -180f, 0f);
+		// Set to ModelView mode
+		gl.glMatrixMode(GL10.GL_MODELVIEW); // Activate Model View Matrix
+		gl.glLoadIdentity(); // Load Identity Matrix
 
-	      gltext.begin( 1.0f, 1.0f, 1.0f, 1.0f );         // Begin Text Rendering (Set Color WHITE)
-	      gltext.draw( ""+game.getUserPlayer().getScore(), 0, 0 );          // Draw Test String
-	      gltext.end();  
-	      
-	      // End Text Rendering
+		// enable texture + alpha blending
+		// NOTE: this is required for text rendering! we could incorporate it
+		// into
+		// the GLText class, but then it would be called multiple times (which
+		// impacts performance).
+		gl.glEnable(GL10.GL_TEXTURE_2D); // Enable Texture Mapping
+		gl.glEnable(GL10.GL_BLEND); // Enable Alpha Blend
+		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA); // Set
+																		// Alpha
+																		// Blend
+																		// Function
+		gl.glRotatef(-90, 1f, 0f, 0f);
+		gl.glTranslatef(-20f, -20f, 0f);
+		// TEST: render the entire font texture
+		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f); // Set Color to Use
+		gltext.drawTexture(width, height); // Draw the Entire Texture
 
-//	      gltext.begin( 0.0f, 0.0f, 1.0f, 1.0f );         // Begin Text Rendering (Set Color BLUE)
-//	      gltext.draw( "More Lines...", 50, 150 );        // Draw Test String
-//	      gltext.draw( "The End.", 50, 150 + gltext.getCharHeight() );  // Draw Test String
-//	      gltext.end();                                   // End Text Rendering
+		GameModel game = GameModel.get();
 
-	      // disable texture + alpha
-	      gl.glDisable( GL10.GL_BLEND );                  // Disable Alpha Blend
-	      gl.glDisable( GL10.GL_TEXTURE_2D );             // Disable Texture Mapping
-	      gl.glPopMatrix();
+		// Display ai score
+		gltext.begin(1.0f, 1.0f, 1.0f, 1.0f); // Begin Text Rendering (Set Color
+												// WHITE)
+		gltext.draw("" + game.getAiPlayer().getScore(), 0, 0); // Draw Test
+																// String
+		gltext.end();
+
+		// display player score
+		gl.glTranslatef(0f, -180f, 0f);
+
+		gltext.begin(1.0f, 1.0f, 1.0f, 1.0f); // Begin Text Rendering (Set Color
+												// WHITE)
+		gltext.draw("" + game.getUserPlayer().getScore(), 0, 0); // Draw Test
+																	// String
+		gltext.end();
+
+		// End Text Rendering
+
+		// gltext.begin( 0.0f, 0.0f, 1.0f, 1.0f ); // Begin Text Rendering (Set
+		// Color BLUE)
+		// gltext.draw( "More Lines...", 50, 150 ); // Draw Test String
+		// gltext.draw( "The End.", 50, 150 + gltext.getCharHeight() ); // Draw
+		// Test String
+		// gltext.end(); // End Text Rendering
+
+		// disable texture + alpha
+		gl.glDisable(GL10.GL_BLEND); // Disable Alpha Blend
+		gl.glDisable(GL10.GL_TEXTURE_2D); // Disable Texture Mapping
+		gl.glPopMatrix();
 	}
 }

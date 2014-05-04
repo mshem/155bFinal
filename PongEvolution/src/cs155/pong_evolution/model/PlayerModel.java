@@ -1,6 +1,8 @@
 package cs155.pong_evolution.model;
 
-public abstract class PlayerModel {
+import java.util.Observable;
+
+public abstract class PlayerModel extends Observable {
 	private String name;
 	private int score;
 	private PaddleModel paddle;
@@ -28,6 +30,8 @@ public abstract class PlayerModel {
 
 	public void increaseScore() {
 		score++;
+		this.setChanged();
+		this.notifyObservers();
 	}
 	
 	@Override

@@ -21,15 +21,10 @@ public class TouchControl {
 	private float oldX;
 	private float oldY;
 
-	private long lastEvent = System.currentTimeMillis();
-
 	private long touchStartMillis;
 
-	private GameModel game;
-
-	public TouchControl(GameModel game) {
+	public TouchControl() {
 		super();
-		this.game = game;
 	}
 
 	public boolean onTouchEvent(MotionEvent event) {
@@ -65,7 +60,7 @@ public class TouchControl {
 
 		currentAction = ACTION_TAP;
 
-		game.getUserPaddle().stop();
+		GameModel.get().getUserPaddle().stop();
 	}
 
 	private void handleMoveTouch(float x, float y) {
@@ -80,8 +75,8 @@ public class TouchControl {
 		currentAction = ACTION_MOVE;
 
 		if (dx > 0)
-			game.getUserPaddle().moveRight();
+			GameModel.get().getUserPaddle().moveRight();
 		else
-			game.getUserPaddle().moveLeft();
+			GameModel.get().getUserPaddle().moveLeft();
 	}
 }

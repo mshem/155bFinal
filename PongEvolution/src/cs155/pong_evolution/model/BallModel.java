@@ -66,12 +66,12 @@ public class BallModel extends MovingObjectModel {
 		return false;
 	}
 
-	private void checkPaddleDist(float paddleDist, String paddleName) {
+	private void checkPaddleDist(float paddleDist, String userName) {
 		if (paddleDist <MIN_PADDLE_HIT_DIST)
 			return; // ball already passed the top paddle
 
 		if (paddleDist < MAX_PADDLE_HIT_DIST) {
-			System.out.println("hit AI paddle, dist: " + paddleDist);
+			System.out.println("hit " + userName +" paddle, dist: " + paddleDist);
 			direction[2] = -direction[2];
 		}
 	}

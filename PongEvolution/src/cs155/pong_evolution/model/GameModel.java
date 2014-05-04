@@ -4,7 +4,7 @@ public class GameModel {
 	private static final float BALL_SPEED = 0.05f;
 	private static final float PADDLE_SPEED = 0.05f;
 	private static final float PADDLE_OFFSET = 10f;
-	private static final int AI_STRENGTH = 2;
+	private static final int AI_STRENGTH = 1;
 	/*
 	 * size of the board
 	 */
@@ -19,11 +19,20 @@ public class GameModel {
 	private long lastTime = System.currentTimeMillis();
 	private long passedMillis = 0;
 
-	public GameModel() {
+	// Singleton pattern
+	private static GameModel instance;
+
+	public static GameModel get() {
+		if (instance == null)
+			instance = new GameModel();
+		return instance;
+	}
+
+	private GameModel() {
 		this.ball = createBall();
 
-		setUserPlayer(new UserPlayerModel(createPaddle(HEIGHT - PADDLE_OFFSET)));
-		setAiPlayer(new AiPlayerModel(createPaddle(PADDLE_OFFSET), AI_STRENGTH));
+		userPlayer = new UserPlayerModel(createPaddle(HEIGHT - PADDLE_OFFSET));
+		aiPlayer = new AiPlayerModel(createPaddle(PADDLE_OFFSET), AI_STRENGTH);
 	}
 
 	private PaddleModel createPaddle(float zPos) {
@@ -80,15 +89,7 @@ public class GameModel {
 		return userPlayer;
 	}
 
-	public void setUserPlayer(PlayerModel userPlayer) {
-		this.userPlayer = userPlayer;
-	}
-
 	public PlayerModel getAiPlayer() {
 		return aiPlayer;
-	}
-
-	public void setAiPlayer(PlayerModel aiPlayer) {
-		this.aiPlayer = aiPlayer;
 	}
 }
