@@ -19,22 +19,21 @@ public class BallModel extends MovingObjectModel {
 	public BallModel(float[] center, float[] size, float speed) {
 		super(center, size, speed);
 
-		 randomizeDirection();
+		randomizeDirection(new Random().nextBoolean());
 		// direction[2] = 1f;
 		// center[0] -= 16.5f;
-//		setDirection(0);
+		// setDirection(0);
 	}
 
-	private void randomizeDirection() {
+	private void randomizeDirection(boolean towardsUser) {
 		Random rand = new Random();
 
-		boolean towardsUser = rand.nextBoolean();
 		double angle = 90.0 - INIT_ANGLE_SPECTRUM / 2;
 		angle += rand.nextFloat() * INIT_ANGLE_SPECTRUM;
-		
+
 		if (!towardsUser)
 			angle = -angle;
-		
+
 		setDirection(angle);
 	}
 
@@ -82,17 +81,24 @@ public class BallModel extends MovingObjectModel {
 
 		if (getCenter()[2] == minCenter[2]) {
 			game.getUserPlayer().increaseScore();
-			direction[2] = -direction[2];
+			moveToCenter();
+			randomizeDirection(true);
 			System.out.println("Player Scored! Score:"
 					+ game.getUserPlayer().getScore());
 		}
 
 		if (getCenter()[2] == maxCenter[2]) {
 			game.getAiPlayer().increaseScore();
-			direction[2] = -direction[2];
+			moveToCenter();
+			randomizeDirection(false);
 			System.out.println("Computer Scored! Score:"
 					+ game.getAiPlayer().getScore());
 		}
+	}
+
+	private void moveToCenter() {
+		center[0] = GameModel.get().getWidth() / 2f;
+		center[2] = GameModel.get().getHeight() / 2f;
 	}
 
 	public void update() {
@@ -121,7 +127,7 @@ public class BallModel extends MovingObjectModel {
 			direction[2] = -direction[2];
 			return true;
 		}
-		
+
 		return false;
 	}
 
