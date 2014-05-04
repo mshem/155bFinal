@@ -7,27 +7,68 @@ public class BallModel extends MovingObjectModel {
 	private static final float MIN_PADDLE_HIT_DIST = -1f;
 	private static final float MAX_PADDLE_HIT_DIST = 0.5f;
 
+	/**
+	 * Defines how much flexibility there is for the initial ball direction.
+	 * Should be inside of <code>(0, 90)</code>. <code>0</code> would mean the
+	 * ball can only go straight towards the players (which would cause a very
+	 * boring game), <code>80</code> means the ball could go straight towards
+	 * the player or anywhere between +- 40° compared to this line.
+	 */
+	private static final float INIT_ANGLE_SPECTRUM = 45f;
+
 	public BallModel(float[] center, float[] size, float speed) {
 		super(center, size, speed);
 
-		randomizeDirection();
+		 randomizeDirection();
 		// direction[2] = 1f;
 		// center[0] -= 16.5f;
+//		setDirection(0);
 	}
 
 	private void randomizeDirection() {
 		Random rand = new Random();
-		float a = (rand.nextFloat() - 0.5f) * 2;
-		float b = (rand.nextFloat() - 0.5f) * 2;
-		float c = (float) (Math.sqrt(a * a + b * b));
 
-		// look out for the theoretical case of c==0
-		if (c == 0) {
-			a = b = 1;
-			c = (float) Math.sqrt(2);
-		}
-		direction[0] = a / c;
-		direction[2] = b / c;
+		boolean towardsUser = rand.nextBoolean();
+		double angle = 90.0 - INIT_ANGLE_SPECTRUM / 2;
+		angle += rand.nextFloat() * INIT_ANGLE_SPECTRUM;
+		
+		if (!towardsUser)
+			angle = -angle;
+		
+		setDirection(angle);
+	}
+
+	/**
+	 * Perform a rotation of the vector (1, 0, 0) by <code>angle</code> degrees
+	 * and set the result as the ball's direction in the x-z plane. E.g. an
+	 * <code>angle == 0</code> means moving right, <code>angle == 90</code>
+	 * means moving straight towards the user, <code>angle == -90</code> means
+	 * moving straight towards the AI player.
+	 * 
+	 * @param angle
+	 *            in degrees
+	 */
+	private void setDirection(double angle) {
+		direction[0] = 1;
+		direction[2] = 0;
+
+		rotate(angle);
+	}
+
+	/**
+	 * Adds the given <code>angle</code> to the ball's current direction.
+	 * 
+	 * @param angle
+	 *            in degrees (can be negative)
+	 */
+	private void rotate(double angle) {
+		// convert to radians
+		angle = angle / 180.0 * Math.PI;
+
+		float x = direction[0];
+		float z = direction[2];
+		direction[0] = (float) (x * Math.cos(angle) - z * Math.sin(angle));
+		direction[2] = (float) (x * Math.sin(angle) + z * Math.cos(angle));
 	}
 
 	@Override
@@ -45,7 +86,7 @@ public class BallModel extends MovingObjectModel {
 			System.out.println("Player Scored! Score:"
 					+ game.getUserPlayer().getScore());
 		}
-		
+
 		if (getCenter()[2] == maxCenter[2]) {
 			game.getAiPlayer().increaseScore();
 			direction[2] = -direction[2];
