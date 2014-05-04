@@ -11,8 +11,8 @@ package cs155.pong_evolution.model;
  */
 public class PaddleModel extends MovingObjectModel {
 
-	public PaddleModel(GameModel game, float[] center, float[] size, float speed) {
-		super(game, center, size, speed);
+	public PaddleModel(float[] center, float[] size, float speed) {
+		super(center, size, speed);
 
 		// initially a paddle does not move
 		this.direction = new float[] { 0f, 0f, 0f };

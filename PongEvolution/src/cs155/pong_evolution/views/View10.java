@@ -31,7 +31,7 @@ import android.opengl.GLU;
  */
 public class View10 implements ViewDelegate {
 
-	private static final float PADDLE_HEIGHT = 5f;
+	private static final float PADDLE_HEIGHT = 15f;
 	private static final float BALL_HEIGHT = 5f;
 
 	/** Cube instance */
@@ -118,10 +118,6 @@ public class View10 implements ViewDelegate {
 		game.getAIPaddle().setSize(1, PADDLE_HEIGHT);
 
 		game.getBall().setSize(1, BALL_HEIGHT);
-
-		for (MovingObjectModel obj : new MovingObjectModel[] {
-				game.getUserPaddle(), game.getAIPaddle(), game.getBall() })
-			obj.setCenter(1, obj.getSize()[0] / 2f);
 	}
 
 	/**
@@ -139,7 +135,7 @@ public class View10 implements ViewDelegate {
 		gl.glDisable(GL10.GL_DITHER); // Disable dithering ( NEW )
 		gl.glEnable(GL10.GL_TEXTURE_2D); // Enable Texture Mapping
 		gl.glShadeModel(GL10.GL_SMOOTH); // Enable Smooth Shading
-		gl.glClearColor(0f, 0f, 1.0f, 1f); // White Background
+		gl.glClearColor(0f, 0f, 0f, 1f); // black Background
 		gl.glClearDepthf(1.0f); // Depth Buffer Setup
 		gl.glEnable(GL10.GL_DEPTH_TEST); // Enables Depth Testing
 		gl.glDepthFunc(GL10.GL_LEQUAL); // The Type Of Depth Testing To Do
@@ -206,8 +202,6 @@ public class View10 implements ViewDelegate {
 
 		setAngleViewFromUser(gl);
 
-		// gl.glScalef(2f, 2f, 2f);
-
 		drawBoard(gl);
 		drawWalls(gl);
 
@@ -263,8 +257,6 @@ public class View10 implements ViewDelegate {
 
 		translateAndScale(gl, ball);
 
-		gl.glColor4f(1f, 1f, 1f, 1f); // draw in white
-
 		cube.draw(gl, filter);
 
 		gl.glPopMatrix();
@@ -296,7 +288,7 @@ public class View10 implements ViewDelegate {
 		GameModel game = GameModel.get();
 		
 		// Point and aim the camera
-		float[] eye = { game.getWidth() / 2f, 200f, game.getHeight() + 100f };
+		float[] eye = { game.getWidth() / 2f, 100f, game.getHeight() + 200f };
 		float[] center = { game.getWidth() / 2f, 0f, game.getHeight() / 2f };
 		float[] up = { 0f, 1f, 0f };
 
@@ -335,7 +327,8 @@ public class View10 implements ViewDelegate {
 		/*
 		 * Load the textures for the shapes once during Surface creation
 		 */
-		cube.loadGLTexture(gl, context, R.drawable.crate);
+		cube.loadGLTexture(gl, context, R.drawable.wood);
+		
 		floor.loadGLTexture(gl, context, R.drawable.tiles);
 		// suzanne.loadGLTexture(gl, context,R.drawable.bg);
 		leftWall.loadGLTexture(gl, context, R.drawable.crate);

@@ -27,12 +27,12 @@ public class Run extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		view = new MasterView(this, new View0());
-		
+		view = new MasterView(this, new View10());
 		ViewDelegate[] nextDelegates = {new View1(), new View10()};
+		
 		ScoreListener listener = new ScoreListener(view, nextDelegates);
 		
-		GameModel.get().getUserPlayer().addObserver(listener);
+//		GameModel.get().getUserPlayer().addObserver(listener);
 		
 		setContentView(view);
 	}

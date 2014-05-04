@@ -34,10 +34,8 @@ public abstract class MovingObjectModel {
 	 */
 	private float[] size;
 
-	protected GameModel game;
-
-	protected final float[] MIN_CENTER;
-	protected final float[] MAX_CENTER;
+	protected float[] minCenter;
+	protected float[] maxCenter;
 
 	private long lastActionTime= System.currentTimeMillis();
 	
@@ -55,16 +53,23 @@ public abstract class MovingObjectModel {
 	 *            how fast the object will move if it is not still (field units
 	 *            per second)
 	 */
-	public MovingObjectModel(GameModel game, float[] center, float[] size,
+	public MovingObjectModel(float[] center, float[] size,
 			float speed) {
-		this.game = game;
 		this.center = center;
 		this.size = size;
 		this.speed = speed;
 		this.direction = new float[] { 0f, 0f, 0f };
 
-		MIN_CENTER = new float[] { size[0] / 2f, center[1], size[2] / 2f };
-		MAX_CENTER = new float[] { game.getWidth() - size[0] / 2f, center[1],
+		updateCenter();
+	}
+
+	private void updateCenter() {
+		setCenter(1, size[1] / 2f);
+		
+		GameModel game = GameModel.get();
+		
+		minCenter = new float[] { size[0] / 2f, center[1], size[2] / 2f };
+		maxCenter = new float[] { game.getWidth() - size[0] / 2f, center[1],
 				game.getHeight() - size[2] / 2f };
 	}
 
@@ -72,18 +77,18 @@ public abstract class MovingObjectModel {
 	 * Update the object's position. Make sure it does not leave the board.
 	 */
 	public void update() {
-
 		// first update the center position regardless of the board borders
+		GameModel game = GameModel.get();
 		for (int i = 0; i < 3; i++)
 			center[i] += direction[i] * speed * game.getPassedMillis();
 
 		// then check if object is about to leave the board
 		boolean atBorder = false;
 		for (int i = 0; i < 3; i++) {
-			if (center[i] < MIN_CENTER[i] || center[i] > MAX_CENTER[i]) {
+			if (center[i] < minCenter[i] || center[i] > maxCenter[i]) {
 				atBorder = true;
-				center[i] = Math.min(MAX_CENTER[i], center[i]);
-				center[i] = Math.max(MIN_CENTER[i], center[i]);
+				center[i] = Math.min(maxCenter[i], center[i]);
+				center[i] = Math.max(minCenter[i], center[i]);
 			}
 		}
 
@@ -131,6 +136,7 @@ public abstract class MovingObjectModel {
 	
 	public void setSize(int dimension, float value) {
 		this.size[dimension] = value;
+		updateCenter();
 	}
 	
 	public void setCenter(int dimension, float value) {

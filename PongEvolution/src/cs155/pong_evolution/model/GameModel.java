@@ -23,28 +23,34 @@ public class GameModel {
 	private static GameModel instance;
 
 	public static GameModel get() {
-		if (instance == null)
+		if (instance == null){
 			instance = new GameModel();
+			instance.init();
+		}
+		
 		return instance;
 	}
 
 	private GameModel() {
-		this.ball = createBall();
+	}
+
+	private void init() {
+		ball = createBall();
 
 		userPlayer = new UserPlayerModel(createPaddle(HEIGHT - PADDLE_OFFSET));
 		aiPlayer = new AiPlayerModel(createPaddle(PADDLE_OFFSET), AI_STRENGTH);
 	}
-
+	
 	private PaddleModel createPaddle(float zPos) {
 		float[] center = { WIDTH / 2f, 0.1f, zPos };
 		float[] size = { 20f, 0f, 2f };
-		return new PaddleModel(this, center, size, PADDLE_SPEED);
+		return new PaddleModel(center, size, PADDLE_SPEED);
 	}
 
 	private BallModel createBall() {
 		float[] center = { WIDTH / 2f, 0.1f, HEIGHT / 2f };
 		float[] size = { 5f, 0f, 5f };
-		return new BallModel(this, center, size, BALL_SPEED);
+		return new BallModel(center, size, BALL_SPEED);
 	}
 
 	public BallModel getBall() {

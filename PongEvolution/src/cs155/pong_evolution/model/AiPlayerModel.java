@@ -49,7 +49,7 @@ public class AiPlayerModel extends PlayerModel {
 	}
 
 	private float getExpectedHitPosX() {
-		BallModel ball = getPaddle().game.getBall();
+		BallModel ball = GameModel.get().getBall();
 
 		float zDif = ball.getMaxPos(2) - getPaddle().getMaxPos(2);
 		float dt = -zDif / ball.direction[2];

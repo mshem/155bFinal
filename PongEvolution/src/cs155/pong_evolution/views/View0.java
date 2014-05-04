@@ -2,7 +2,6 @@ package cs155.pong_evolution.views;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import cs155.pong_evolution.controller.TouchControl;
 import cs155.pong_evolution.model.BallModel;
 import cs155.pong_evolution.model.GameModel;
 import cs155.pong_evolution.model.MovingObjectModel;
@@ -10,10 +9,7 @@ import cs155.pong_evolution.model.PaddleModel;
 import cs155.pong_evolution.shapes.Square3D;
 import cs155.pong_evolution.views.MasterView.ViewDelegate;
 import android.content.Context;
-import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
-import android.opengl.GLSurfaceView.Renderer;
-import android.view.MotionEvent;
 
 /**
  * This is a modification of the "Lesson 07: Texture Mapping" NeHe tutorial for
