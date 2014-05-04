@@ -111,15 +111,18 @@ public class BallModel extends MovingObjectModel {
 		return false;
 	}
 
-	private void checkPaddleDist(float paddleDist, String userName) {
+	private boolean checkPaddleDist(float paddleDist, String userName) {
 		if (paddleDist < MIN_PADDLE_HIT_DIST)
-			return; // ball already passed the top paddle
+			return false; // ball already passed the top paddle
 
 		if (paddleDist < MAX_PADDLE_HIT_DIST) {
 			System.out.println("hit " + userName + " paddle, dist: "
 					+ paddleDist);
 			direction[2] = -direction[2];
+			return true;
 		}
+		
+		return false;
 	}
 
 	private void checkAIPaddle() {
@@ -132,7 +135,9 @@ public class BallModel extends MovingObjectModel {
 
 		float paddleDist = getMinPos(2) - paddle.getMaxPos(2);
 
-		checkPaddleDist(paddleDist, "AI");
+		boolean hit = checkPaddleDist(paddleDist, "AI");
+		if (hit)
+			rotate(-paddle.direction[0] * 20);
 	}
 
 	private void checkUserPaddle() {
@@ -145,6 +150,8 @@ public class BallModel extends MovingObjectModel {
 
 		float paddleDist = paddle.getMinPos(2) - getMaxPos(2);
 
-		checkPaddleDist(paddleDist, "user");
+		boolean hit = checkPaddleDist(paddleDist, "user");
+		if (hit)
+			rotate(paddle.direction[0] * 20);
 	}
 }
