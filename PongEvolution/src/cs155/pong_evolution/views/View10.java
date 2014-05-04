@@ -13,6 +13,7 @@ import cs155.pong_evolution.model.MovingObjectModel;
 import cs155.pong_evolution.model.PaddleModel;
 import cs155.pong_evolution.shapes.Cube;
 import cs155.pong_evolution.shapes.Plane;
+import cs155.pong_evolution.shapes.Sphere;
 import cs155.pong_evolution.shapes.TrianglePrism;
 import cs155.pong_evolution.views.MasterView.ViewDelegate;
 import android.content.Context;
@@ -32,10 +33,10 @@ import android.opengl.GLU;
 public class View10 implements ViewDelegate {
 
 	private static final float PADDLE_HEIGHT = 15f;
-	private static final float BALL_HEIGHT = 5f;
+	private static final float BALL_SIZE = 5f;
 
-	/** Cube instance */
 	private Cube cube;
+//	private Sphere sphere;
 	private Plane floor;
 	// private MeshObject suzanne = null;
 	private Plane leftWall, rightWall;
@@ -51,9 +52,9 @@ public class View10 implements ViewDelegate {
 	 */
 	private float[] lightAmbient = { 0.5f, 0.5f, 0.5f, 1.0f };
 	private float[] lightDiffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
-	private float[] lightPosition = { 50.0f, 25.0f, 50.0f, 1.0f };
-	private float[] lightPosition1 = { 50.0f, 10.0f, 50.0f, 1.0f };
-	private float[] lightPosition2 = { 50.0f, 5.0f, 50.0f, 1.0f };
+	private float[] light0Position = { 50.0f, 25.0f, 50.0f, 1.0f };
+	private float[] light1Position = { 50.0f, 10.0f, 50.0f, 1.0f };
+	private float[] light2Position = { 50.0f, 5.0f, 50.0f, 1.0f };
 
 	/* The buffers for our light values ( NEW ) */
 	private FloatBuffer lightAmbientBuffer;
@@ -85,26 +86,27 @@ public class View10 implements ViewDelegate {
 		lightDiffuseBuffer.put(lightDiffuse);
 		lightDiffuseBuffer.position(0);
 
-		byteBuf = ByteBuffer.allocateDirect(lightPosition.length * 4);
+		byteBuf = ByteBuffer.allocateDirect(light0Position.length * 4);
 		byteBuf.order(ByteOrder.nativeOrder());
 		lightPositionBuffer = byteBuf.asFloatBuffer();
-		lightPositionBuffer.put(lightPosition);
+		lightPositionBuffer.put(light0Position);
 		lightPositionBuffer.position(0);
 
-		byteBuf = ByteBuffer.allocateDirect(lightPosition.length * 4);
+		byteBuf = ByteBuffer.allocateDirect(light0Position.length * 4);
 		byteBuf.order(ByteOrder.nativeOrder());
 		lightPositionBuffer1 = byteBuf.asFloatBuffer();
-		lightPositionBuffer1.put(lightPosition1);
+		lightPositionBuffer1.put(light1Position);
 		lightPositionBuffer1.position(0);
 
-		byteBuf = ByteBuffer.allocateDirect(lightPosition.length * 4);
+		byteBuf = ByteBuffer.allocateDirect(light0Position.length * 4);
 		byteBuf.order(ByteOrder.nativeOrder());
 		lightPositionBuffer2 = byteBuf.asFloatBuffer();
-		lightPositionBuffer2.put(lightPosition2);
+		lightPositionBuffer2.put(light2Position);
 		lightPositionBuffer2.position(0);
 
 		//
 		cube = new Cube();
+//		sphere = new Sphere(1f, 30, 30);
 		floor = new Plane();
 		leftWall = new Plane();
 		rightWall = new Plane();
@@ -117,7 +119,8 @@ public class View10 implements ViewDelegate {
 		game.getUserPaddle().setSize(1, PADDLE_HEIGHT);
 		game.getAIPaddle().setSize(1, PADDLE_HEIGHT);
 
-		game.getBall().setSize(1, BALL_HEIGHT);
+		for (int i = 0; i < 3; i++)
+			game.getBall().setSize(i, BALL_SIZE);
 	}
 
 	/**
@@ -256,7 +259,7 @@ public class View10 implements ViewDelegate {
 		gl.glPushMatrix();
 
 		translateAndScale(gl, ball);
-
+		
 		cube.draw(gl, filter);
 
 		gl.glPopMatrix();
@@ -328,7 +331,7 @@ public class View10 implements ViewDelegate {
 		 * Load the textures for the shapes once during Surface creation
 		 */
 		cube.loadGLTexture(gl, context, R.drawable.wood);
-		
+//		sphere.loadGLTexture(gl, context, R.drawable.ball_8);
 		floor.loadGLTexture(gl, context, R.drawable.tiles);
 		// suzanne.loadGLTexture(gl, context,R.drawable.bg);
 		leftWall.loadGLTexture(gl, context, R.drawable.crate);
