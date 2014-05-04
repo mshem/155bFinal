@@ -52,7 +52,7 @@ public class View0 implements ViewDelegate {
 		gl.glDisable(GL10.GL_DITHER); // Disable dithering ( NEW )
 		gl.glEnable(GL10.GL_TEXTURE_2D); // Enable Texture Mapping
 		gl.glShadeModel(GL10.GL_SMOOTH); // Enable Smooth Shading
-		gl.glClearColor(0f, 0f, 1.0f, 1f); // White Background
+		gl.glClearColor(1f, 1f, 1f, 1f); // White Background
 		gl.glClearDepthf(1.0f); // Depth Buffer Setup
 		gl.glEnable(GL10.GL_DEPTH_TEST); // Enables Depth Testing
 		gl.glDepthFunc(GL10.GL_LEQUAL); // The Type Of Depth Testing To Do
