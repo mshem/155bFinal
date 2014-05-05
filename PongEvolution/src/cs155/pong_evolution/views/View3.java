@@ -403,6 +403,6 @@ public class View3 implements ViewDelegate {
 		// suzanne.loadGLTexture(gl, context,R.drawable.bg);
 		leftWall.loadGLTexture(gl, context, R.drawable.crate);
 		rightWall.loadGLTexture(gl, context, R.drawable.crate);
-		tprism.loadGLTexture(gl, context, R.drawable.icon);
+		tprism.loadGLTexture(gl, context, R.drawable.icon1);
 	}
 }

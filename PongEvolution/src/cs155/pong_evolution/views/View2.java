@@ -29,7 +29,7 @@ import android.view.MotionEvent;
  * (nea/INsanityDesign)
  * 
  * @author Tim Hickey
- * @author Michael Shemesh
+ * @author Michael Shemesh, mshem@brandeis.edu
  */
 public class View2 implements ViewDelegate {
 

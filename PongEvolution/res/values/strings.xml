@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">NeHe Android Lesson 07</string>
-    <string name="author">Savas Ziplies</string>
+    <string name="app_name">Pong Revolution</string>
+    <string name="author">Michael Shemesh, Georg Konwisser, Ted McNulty, Tim Hickey</string>
     <string name="website">http://www.insanitydesign.com/</string>
 </resources>

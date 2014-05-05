@@ -175,7 +175,7 @@ public class MasterView extends GLSurfaceView implements Renderer {
 																			// Blend
 																			// Function
 			gl.glRotatef(-90, 1f, 0f, 0f);
-			gl.glTranslatef(-10f, -30f, 0f);
+			gl.glTranslatef(-12f, -30f, 0f);
 //			gl.glTranslatef(-20f, -20f, 0f);
 			// TEST: render the entire font texture
 			gl.glColor4f(0f, 1.0f, 0f, 1f); // Set Color to Use
