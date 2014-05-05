@@ -28,9 +28,9 @@ import android.opengl.GLU;
  * is in the GameModel class
  * 
  * @author Tim Hickey
- * @author Georg Konwisser, gekonwi@brandeis.edu
+ * @author Michael Shemesh, mshem@brandeis.edu
  */
-public class View10 implements ViewDelegate {
+public class View3 implements ViewDelegate {
 
 	private static final float PADDLE_HEIGHT = 15f;
 	private static final float BALL_HEIGHT = 5f;
@@ -78,7 +78,7 @@ public class View10 implements ViewDelegate {
 	 * @param context
 	 *            - The Activity Context
 	 */
-	public View10() {
+	public View3() {
 		//
 		ByteBuffer byteBuf = ByteBuffer.allocateDirect(lightAmbient.length * 4);
 		byteBuf.order(ByteOrder.nativeOrder());
@@ -247,7 +247,8 @@ public class View10 implements ViewDelegate {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
 
-		setAngleViewFromUser(gl);
+//		setAngleViewFromUser(gl);
+		setViewFromAbove(gl);
 
 		drawBoard(gl);
 		drawWalls(gl);
@@ -369,6 +370,27 @@ public class View10 implements ViewDelegate {
 		gl.glLoadIdentity();
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glPopMatrix();
+	}
+	
+	private void setViewFromAbove(GL10 gl) {
+		gl.glMatrixMode(GL10.GL_PROJECTION); // Select The Projection Matrix
+		gl.glLoadIdentity(); // Reset The Projection Matrix
+
+		// Set the properties of the camera
+		GLU.gluPerspective(gl, 45.0f, width / height, 0.1f, 10000.0f);
+
+		GameModel game = GameModel.get();
+
+		// Point and aim the camera
+		float[] eye = { game.getWidth() / 2f, MasterView.DEFAULT_CAM_HEIGHT,
+				game.getHeight() / 2f };
+		float[] center = { game.getWidth() / 2f, 0f, game.getHeight() / 2f };
+		float[] up = { 0f, 0f, -1f };
+
+		GLU.gluLookAt(gl, eye[0], eye[1], eye[2], center[0], center[1],
+				center[2], up[0], up[1], up[2]);
+
+		gl.glMatrixMode(GL10.GL_MODELVIEW); // Select The Modelview Matrix
 	}
 
 	private void loadTextures(GL10 gl, Context context) {

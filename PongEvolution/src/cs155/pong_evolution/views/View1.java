@@ -2,6 +2,7 @@ package cs155.pong_evolution.views;
 
 import java.io.IOException;
 
+import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import cs155.pong_evolution.controller.TouchControl;
@@ -55,8 +56,9 @@ public class View1 implements ViewDelegate {
 	 */
 	public void init(GL10 gl, Context context) {
 		// Settings
-		gltext = new GLText(gl, context.getAssets());
-		gltext.load("Roboto-Regular.ttf", 14, 2, 2);
+
+
+			
 
 		gl.glDisable(GL10.GL_DITHER); // Disable dithering ( NEW )
 		gl.glEnable(GL10.GL_TEXTURE_2D); // Enable Texture Mapping
@@ -69,11 +71,15 @@ public class View1 implements ViewDelegate {
 		// Really Nice Perspective Calculations
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
 	}
+	
+
 
 	/**
 	 * If the surface changes, reset the viewport
 	 */
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
+		
+
 		if (height == 0) {
 			height = 1;
 		} // Prevent A Divide By Zero By Making Height Equal One
@@ -96,10 +102,10 @@ public class View1 implements ViewDelegate {
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
-
+//	displayScore(gl);
 		setViewFromAbove(gl);
 		// setViewFromAboveOrtho(gl);
-		displayScore(gl);
+	
 		drawBoard(gl);
 
 		GameModel game = GameModel.get();
@@ -204,9 +210,10 @@ public class View1 implements ViewDelegate {
 
 	public void displayScore(GL10 gl) {
 
+		
 		gl.glPushMatrix();
 		// Redraw background color
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+//		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		// Set to ModelView mode
 		gl.glMatrixMode(GL10.GL_MODELVIEW); // Activate Model View Matrix
@@ -223,16 +230,16 @@ public class View1 implements ViewDelegate {
 																		// Alpha
 																		// Blend
 																		// Function
-		gl.glRotatef(-90, 1f, 0f, 0f);
-		gl.glTranslatef(-20f, -20f, 0f);
+//		gl.glRotatef(-90, 1f, 0f, 0f);
+//		gl.glTranslatef(-20f, -20f, 0f);
 		// TEST: render the entire font texture
-		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f); // Set Color to Use
+		gl.glColor4f(0f, 1.0f, 1.0f, 1.0f); // Set Color to Use
 		gltext.drawTexture(width, height); // Draw the Entire Texture
 
 		GameModel game = GameModel.get();
 
 		// Display ai score
-		gltext.begin(1.0f, 1.0f, 1.0f, 1.0f); // Begin Text Rendering (Set Color
+		gltext.begin(1.0f, 0f, 0f, 0f); // Begin Text Rendering (Set Color
 												// WHITE)
 		gltext.draw("" + game.getAiPlayer().getScore(), 0, 0); // Draw Test
 																// String
@@ -258,7 +265,7 @@ public class View1 implements ViewDelegate {
 
 		// disable texture + alpha
 		gl.glDisable(GL10.GL_BLEND); // Disable Alpha Blend
-		gl.glDisable(GL10.GL_TEXTURE_2D); // Disable Texture Mapping
+//		gl.glDisable(GL10.GL_TEXTURE_2D); // Disable Texture Mapping
 		gl.glPopMatrix();
 	}
 }

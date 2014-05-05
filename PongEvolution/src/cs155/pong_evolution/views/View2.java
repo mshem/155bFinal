@@ -1,7 +1,11 @@
 package cs155.pong_evolution.views;
 
+import java.io.IOException;
+
+import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import cs155.pong_evolution.controller.TouchControl;
 import cs155.pong_evolution.model.BallModel;
 import cs155.pong_evolution.model.GameModel;
 import cs155.pong_evolution.model.MovingObjectModel;
@@ -9,41 +13,41 @@ import cs155.pong_evolution.model.PaddleModel;
 import cs155.pong_evolution.shapes.Square3D;
 import cs155.pong_evolution.views.MasterView.ViewDelegate;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
+import android.opengl.GLSurfaceView.Renderer;
+import android.opengl.GLUtils;
+import android.view.MotionEvent;
 
 /**
  * This is a modification of the "Lesson 07: Texture Mapping" NeHe tutorial for
  * the Google Android Platform originally ported to Android by Savas Ziplies
  * (nea/INsanityDesign)
  * 
- * This file contains the View and Controller components of the game. The Model
- * is in the GameModel07 class
- * 
  * @author Tim Hickey
- * @author Ted
+ * @author Michael Shemesh
  */
-public class View0 implements ViewDelegate {
-
+public class View2 implements ViewDelegate {
 
 	private Square3D square;
 
-	private GLText gltext;
-	
-	
 	private float width, height;
 
 	private int filter = 1;
 
-	private static final long lagTime = 350;
-	
-	
+	GLText gltext;
+
 	/**
 	 * Instance the Cube object and set the Activity Context handed over.
 	 * Initiate the light buffers and set this class as renderer for this now
 	 * GLSurfaceView. Request Focus and set if focusable in touch mode to
 	 * receive the Input from Screen and Buttons
 	 */
-	public View0() {
+	public View2() {
 		this.square = new Square3D();
 	}
 
@@ -51,11 +55,11 @@ public class View0 implements ViewDelegate {
 	 * The Surface is created/init()
 	 */
 	public void init(GL10 gl, Context context) {
-		
-		gltext = new GLText(gl, context.getAssets());
-		gltext.load("Roboto-Regular.ttf", 14, 2, 2);
-		
 		// Settings
+
+
+			
+
 		gl.glDisable(GL10.GL_DITHER); // Disable dithering ( NEW )
 		gl.glEnable(GL10.GL_TEXTURE_2D); // Enable Texture Mapping
 		gl.glShadeModel(GL10.GL_SMOOTH); // Enable Smooth Shading
@@ -67,13 +71,15 @@ public class View0 implements ViewDelegate {
 		// Really Nice Perspective Calculations
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
 	}
+	
+
 
 	/**
 	 * If the surface changes, reset the viewport
 	 */
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		
-		
+
 		if (height == 0) {
 			height = 1;
 		} // Prevent A Divide By Zero By Making Height Equal One
@@ -96,14 +102,14 @@ public class View0 implements ViewDelegate {
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
-
+//	displayScore(gl);
 		setViewFromAbove(gl);
-
-//		displayScore(gl);
+		// setViewFromAboveOrtho(gl);
+	
 		drawBoard(gl);
-		
+
 		GameModel game = GameModel.get();
-		
+
 		drawBall(gl, game.getBall());
 		drawPaddle(gl, game.getUserPaddle());
 		drawPaddle(gl, game.getAIPaddle());
@@ -116,30 +122,16 @@ public class View0 implements ViewDelegate {
 		float[] size = model.getSize();
 		gl.glScalef(size[0], size[1], size[2]);
 	}
-	
-	private void translateAndScaleLag(GL10 gl, MovingObjectModel model){
-		float pos[] = model.getLaggingCenter();
-		gl.glTranslatef(pos[0], pos[1], pos[2]);
-		
-		float[] size= model.getSize();
-		gl.glScalef(size[0], size[1], size[2]);
-	}
 
 	private void drawBall(GL10 gl, BallModel ball) {
 		gl.glPushMatrix();
-		if (System.currentTimeMillis() - ball.getLastActionTime() > lagTime){
-			translateAndScale(gl, ball);
-			gl.glColor4f(1f, 1f, 1f, 1f); // draw in white
-			square.draw(gl, filter);
-			ball.setLaggingCenter();
-			ball.setLastActionTime(System.currentTimeMillis());
-		}
-		else{
-			translateAndScaleLag(gl, ball);
-			gl.glColor4f(1f, 1f, 1f, 1f); // draw in pink
-			square.draw(gl, filter);
-		}
-		
+
+		translateAndScale(gl, ball);
+
+		gl.glColor4f(.6f, .2f, 0f, 1f); // draw in brown
+
+		square.draw(gl, filter);
+
 		gl.glPopMatrix();
 	}
 
@@ -149,19 +141,27 @@ public class View0 implements ViewDelegate {
 	 */
 	private void drawPaddle(GL10 gl, PaddleModel paddle) {
 		gl.glPushMatrix();
-		if(System.currentTimeMillis()- paddle.getLastActionTime() > lagTime){
-			translateAndScale(gl, paddle);
-			gl.glColor4f(1f, 1f, 1f, 1f); // draw in white
-			square.draw(gl, filter);
-			paddle.setLaggingCenter();
-			paddle.setLastActionTime(System.currentTimeMillis());
-		}
-		else{
-			translateAndScaleLag(gl, paddle);
-			gl.glColor4f(1f, 1f, 1f, 1f);
-			square.draw(gl, filter);
-		}
+
+		translateAndScale(gl, paddle);
+
+		gl.glColor4f(.6f, .2f, 0f, 1f); // draw in white
+
+		square.draw(gl, filter);
+
 		gl.glPopMatrix();
+	}
+
+	private void setViewFromAboveOrtho(GL10 gl) {
+		gl.glMatrixMode(GL10.GL_PROJECTION); // Select The Projection Matrix
+		gl.glLoadIdentity(); // Reset The Projection Matrix
+
+		gl.glOrthof(-10f, GameModel.get().getWidth() + 10f, 0f, 210f, -1f,
+				1000f);
+		gl.glTranslatef(0, 20f, 0f);
+		gl.glRotatef(90f, 1, 0, 0);
+		gl.glTranslatef(0, -30f, -185f);
+
+		gl.glMatrixMode(GL10.GL_MODELVIEW); // Select The Modelview Matrix
 	}
 
 	private void setViewFromAbove(GL10 gl) {
@@ -172,9 +172,10 @@ public class View0 implements ViewDelegate {
 		GLU.gluPerspective(gl, 45.0f, width / height, 0.1f, 10000.0f);
 
 		GameModel game = GameModel.get();
-		
+
 		// Point and aim the camera
-		float[] eye = { game.getWidth() / 2f, MasterView.DEFAULT_CAM_HEIGHT, game.getHeight() / 2f };
+		float[] eye = { game.getWidth() / 2f, MasterView.DEFAULT_CAM_HEIGHT,
+				game.getHeight() / 2f };
 		float[] center = { game.getWidth() / 2f, 0f, game.getHeight() / 2f };
 		float[] up = { 0f, 0f, -1f };
 
@@ -188,7 +189,7 @@ public class View0 implements ViewDelegate {
 		gl.glPushMatrix();
 
 		GameModel game = GameModel.get();
-		
+
 		// move to the board center
 		gl.glTranslatef(game.getWidth() / 2f, 0f, game.getHeight() / 2f);
 
@@ -200,8 +201,14 @@ public class View0 implements ViewDelegate {
 
 		gl.glPopMatrix();
 	}
-	
-public void displayScore(GL10 gl) {
+
+	/**
+	 * Override the touch screen listener.
+	 * 
+	 * React to moves and presses on the touchscreen.
+	 */
+
+	public void displayScore(GL10 gl) {
 
 		
 		gl.glPushMatrix();
