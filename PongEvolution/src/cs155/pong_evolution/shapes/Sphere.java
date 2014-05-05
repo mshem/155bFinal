@@ -22,8 +22,7 @@ import android.opengl.GLUtils;
 /**
  * This class is an object representation of a Sphere containing the vertex
  * information, texture coordinates, the vertex indices and drawing
- * functionality, which is called by the renderer. Originally created by Savas
- * Ziplies (nea/INsanityDesign)
+ * functionality, which is called by the renderer. currently not working :(
  * 
  * @author Georg Konwisser, gekonwi@brandeis.edu
  * 

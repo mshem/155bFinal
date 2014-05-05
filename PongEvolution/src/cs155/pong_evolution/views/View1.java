@@ -27,10 +27,8 @@ import android.view.MotionEvent;
  * the Google Android Platform originally ported to Android by Savas Ziplies
  * (nea/INsanityDesign)
  * 
- * This file contains the View and Controller components of the game. The Model
- * is in the GameModel07 class
- * 
  * @author Tim Hickey
+ * @author Georg Konwisser, gekonwi@brandeis.edu
  */
 public class View1 implements ViewDelegate {
 

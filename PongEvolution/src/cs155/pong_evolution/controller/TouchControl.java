@@ -3,6 +3,11 @@ package cs155.pong_evolution.controller;
 import cs155.pong_evolution.model.GameModel;
 import android.view.MotionEvent;
 
+/**
+ * 
+ * 
+ * @author Georg Konwisser, gekonwi@brandeis.edu
+ */
 public class TouchControl {
 	private static final long MAX_TAP_MILLIS = 250L;
 	private static final float MIN_MOVE_DIST = 2f;

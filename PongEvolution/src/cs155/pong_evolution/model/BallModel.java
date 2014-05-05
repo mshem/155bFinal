@@ -2,6 +2,11 @@ package cs155.pong_evolution.model;
 
 import java.util.Random;
 
+/**
+ * 
+ * @author Tim Hickey
+ * @author Georg Konwisser, gekonwi@brandeis.edu
+ */
 public class BallModel extends MovingObjectModel {
 
 	private static final float MIN_PADDLE_HIT_DIST = -1f;
@@ -12,7 +17,7 @@ public class BallModel extends MovingObjectModel {
 	 * Should be inside of <code>(0, 90)</code>. <code>0</code> would mean the
 	 * ball can only go straight towards the players (which would cause a very
 	 * boring game), <code>80</code> means the ball could go straight towards
-	 * the player or anywhere between +- 40° compared to this line.
+	 * the player or anywhere between +- 40ï¿½ compared to this line.
 	 */
 	private static final float INIT_ANGLE_SPECTRUM = 45f;
 

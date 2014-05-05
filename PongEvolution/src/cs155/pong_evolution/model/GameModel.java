@@ -1,5 +1,10 @@
 package cs155.pong_evolution.model;
 
+/**
+ * 
+ * @author Tim Hickey
+ * @author Georg Konwisser, gekonwi@brandeis.edu
+ */
 public class GameModel {
 	private static final float BALL_SPEED = 0.05f;
 	private static final float PADDLE_SPEED = 0.05f;

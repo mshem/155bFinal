@@ -2,6 +2,11 @@ package cs155.pong_evolution.model;
 
 import java.util.Observable;
 
+/**
+ * 
+ * 
+ * @author Georg Konwisser, gekonwi@brandeis.edu
+ */
 public abstract class PlayerModel extends Observable {
 	private String name;
 	private int score;
