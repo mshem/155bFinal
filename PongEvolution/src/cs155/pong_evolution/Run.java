@@ -2,13 +2,8 @@ package cs155.pong_evolution;
 
 import cs155.pong_evolution.controller.ScoreListener;
 import cs155.pong_evolution.model.GameModel;
-import cs155.pong_evolution.views.MasterView;
+import cs155.pong_evolution.views.*;
 import cs155.pong_evolution.views.MasterView.ViewDelegate;
-import cs155.pong_evolution.views.View0;
-import cs155.pong_evolution.views.View1;
-import cs155.pong_evolution.views.View10;
-import cs155.pong_evolution.views.View2;
-import cs155.pong_evolution.views.View3;
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -30,7 +25,7 @@ public class Run extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		view = new MasterView(this, new View0());
-		ViewDelegate[] nextDelegates = {new View1(), new View2(), new View3(), new View10()};
+		ViewDelegate[] nextDelegates = {new View1(), new View2(), new View3(), new View6(), new View10()};
 		
 		ScoreListener listener = new ScoreListener(view, nextDelegates);
 		

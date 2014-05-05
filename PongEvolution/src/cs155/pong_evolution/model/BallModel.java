@@ -87,6 +87,7 @@ public class BallModel extends MovingObjectModel {
 		if (getCenter()[2] == minCenter[2]) {
 			game.getUserPlayer().increaseScore();
 			moveToCenter();
+			game.getBall().setShadow();
 			randomizeDirection(true);
 			System.out.println("Player Scored! Score:"
 					+ game.getUserPlayer().getScore());
@@ -95,6 +96,7 @@ public class BallModel extends MovingObjectModel {
 		if (getCenter()[2] == maxCenter[2]) {
 			game.getAiPlayer().increaseScore();
 			moveToCenter();
+			game.getBall().setShadow();
 			randomizeDirection(false);
 			System.out.println("Computer Scored! Score:"
 					+ game.getAiPlayer().getScore());

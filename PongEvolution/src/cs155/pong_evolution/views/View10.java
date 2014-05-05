@@ -43,6 +43,7 @@ public class View10 implements ViewDelegate {
 
 	private Cube cube;
 	// private Sphere sphere;
+	private Cube shadow;
 	private Plane floor;
 	// private MeshObject suzanne = null;
 	private Plane leftWall, rightWall;
@@ -113,6 +114,7 @@ public class View10 implements ViewDelegate {
 		//
 		cube = new Cube();
 		// sphere = new Sphere(1f, 30, 30);
+		shadow= new Cube();
 		floor = new Plane();
 		leftWall = new Plane();
 		rightWall = new Plane();
@@ -255,8 +257,27 @@ public class View10 implements ViewDelegate {
 		drawBall(gl, GameModel.get().getBall());
 		drawPaddle(gl, GameModel.get().getUserPaddle());
 		drawPaddle(gl, GameModel.get().getAIPaddle());
+		
+		drawShadow(gl, GameModel.get().getBall());
+		drawShadow(gl, GameModel.get().getUserPaddle());
+		drawShadow(gl, GameModel.get().getAIPaddle());
 	}
 
+	private void drawShadow(GL10 gl, MovingObjectModel model){
+		gl.glPushMatrix();
+		
+		float[] pos= model.getCenter();
+		float[] size= model.getSize();
+		float[] shadow= model.getShadow();
+		
+		gl.glTranslatef(pos[0]+shadow[0], 0.01f, pos[2]+shadow[2]);
+		gl.glScalef(size[0], 0.01f, (size[2]+size[1]*0.23f));
+				
+		this.shadow.draw(gl, filter);
+		
+		gl.glPopMatrix();
+	}
+	
 	private void drawWalls(GL10 gl) {
 		gl.glPushMatrix();
 		gl.glTranslatef(GameModel.get().getWidth() / 2, 0f, GameModel.get()
@@ -382,5 +403,7 @@ public class View10 implements ViewDelegate {
 		leftWall.loadGLTexture(gl, context, R.drawable.crate);
 		rightWall.loadGLTexture(gl, context, R.drawable.crate);
 		tprism.loadGLTexture(gl, context, R.drawable.icon1);
+		shadow.loadGLTexture(gl, context, R.drawable.shadow);
+
 	}
 }

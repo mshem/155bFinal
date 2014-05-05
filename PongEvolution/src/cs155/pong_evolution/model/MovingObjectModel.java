@@ -39,6 +39,8 @@ public abstract class MovingObjectModel {
 
 	private long lastActionTime= System.currentTimeMillis();
 	
+	protected float[] shadowCenter= new float[3];
+	
 	/**
 	 * Creates a movable object which changes its position on update if
 	 * <code>direction != (0, 0, 0)</code>. Initially the object does not move.
@@ -79,9 +81,13 @@ public abstract class MovingObjectModel {
 	public void update() {
 		// first update the center position regardless of the board borders
 		GameModel game = GameModel.get();
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++){
 			center[i] += direction[i] * speed * game.getPassedMillis();
-
+//			shadowCenter[i] += (direction[i] * speed * game.getPassedMillis())*0.02;	
+		}
+		
+		shadowCenter[0]=(center[0]- game.getWidth()/2)*0.02f;
+		shadowCenter[2]=(center[2]- game.getHeight()/2)*0.02f;
 		// then check if object is about to leave the board
 		boolean atBorder = false;
 		for (int i = 0; i < 3; i++) {
@@ -159,5 +165,12 @@ public abstract class MovingObjectModel {
 	
 	public void setLastActionTime(long time){
 		lastActionTime=time;
-	}	
+	}
+	
+	public float[] getShadow(){
+		return shadowCenter;
+	}
+	public void setShadow(){
+		shadowCenter=new float[]{0f,0f,0f};
+	}
 }
